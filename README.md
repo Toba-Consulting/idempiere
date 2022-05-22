@@ -1,17 +1,20 @@
-# iDempiere. Community Powered Enterprise
+# TobaERP. an iDempiere distribution by Toba Consulting Services
 
-iDempiere Business Suite ERP/CRM/SCM done the community way.  Focus is on the Community that includes Subject Matter Specialists, Implementors and End-Users.
+While working on our projects, very oftenly we need to develop features that can only resides within the iDempiere core repository. We decided to centralized all of our 
 
-Please visit the project front page containing links for most of our resources: https://www.idempiere.org/
+core development here. Some of it will be proposed to be included in iDempiere and some might just stay here. 
 
-You can have a first-hand experience about the software in one of our live cloud test sites: https://www.idempiere.org/test-sites
+Hence this is the official **base** iDempiere core repo that we will be using for all of our clients. 
 
-If you want to install it by yourself, the most used way is to follow the guide: https://wiki.idempiere.org/en/Installing_iDempiere
+Note that we mentioned **base** as some clients might have some local customizations added on top of this **base** core.
 
-In case of doubts please use our support forums at http://groups.google.com/group/idempiere  
-Or our Mattermost support channel in https://mattermost.idempiere.org/  
-Don't forget to check our [code of conduct](CODE_OF_CONDUCT.md) and our [contribution guide](CONTRIBUTING.md)
+The main iDempiere website is: https://www.idempiere.org/
 
-If you find a bug or want to register a feature request please consider discussing it first in our forums, and after you're totally sure, please use the JIRA ticketing system: https://idempiere.atlassian.net
+Official wiki for iDempiere is: https://wiki.idempiere.org/wiki/Main_Page 
 
-Continuous integration when changing this repository is managed with Jenkins at http://ci.idempiere.org/
+It should be one of the main source for anyone interesting in learning about iDempiere. 
+
+Our website is https://tobaconsulting.com. You can visit it to get more information about us and our products and services. 
+
+If you would like to talk / discuss, you can mail us at chopper@tobaconsulting.com
+
