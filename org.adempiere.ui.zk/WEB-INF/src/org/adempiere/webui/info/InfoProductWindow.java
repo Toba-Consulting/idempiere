@@ -1008,7 +1008,7 @@ public class InfoProductWindow extends InfoWindow {
 			String orderBy) {
 		if (Util.isEmpty(orderBy) && getSelectedWarehouseId() > 0)
 		{
-			orderBy = "QtyAvailable DESC";
+			//orderBy = "QtyAvailable DESC";
 		}
 		super.prepareTable(layout, from, where, orderBy);
 	}
