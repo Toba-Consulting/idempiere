@@ -345,6 +345,42 @@ public class MInventoryLine extends X_M_InventoryLine
 		
 		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
 		String docSubTypeInv = dt.getDocSubTypeInv();
+		
+		/*
+		 * 	TCS-721
+		 * 	Custom code for UnitCost
+		 * 	Author @PhieAlbert
+		 * 	Added by @FigoNugroho 
+		 */
+		if(get_ValueAsBoolean("isUnitCost"))
+		{
+			if(newRecord || is_ValueChanged("UnitCostEntered") || is_ValueChanged("C_UOM_ID"))
+			{
+				if(!MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
+				{
+					BigDecimal unitCostEntered = (BigDecimal) get_Value("UnitCostEntered");
+					int p_C_UOM_ID = get_ValueAsInt("C_UOM_ID");
+					BigDecimal unitCostEntered1 = unitCostEntered.setScale(MUOM.getPrecision(getCtx(), p_C_UOM_ID), RoundingMode.HALF_UP);
+					if (unitCostEntered.compareTo(unitCostEntered1) != 0)
+					{
+						unitCostEntered = unitCostEntered1;
+						set_ValueOfColumn("UnitCostEntered",unitCostEntered);
+					}
+					
+					BigDecimal unitCost = MUOMConversion.convertProductTo (getCtx(), getM_Product_ID(),
+							p_C_UOM_ID, unitCostEntered);
+					
+					if (unitCost == null)
+						unitCost = unitCostEntered;
+					
+					if (((BigDecimal) get_Value("UnitCost")).compareTo(unitCost) != 0)
+						set_ValueOfColumn("UnitCost", unitCost);
+				}
+			}
+		}
+		/*
+		 * 	End TCS-721
+		 */
 
 		if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv)) {
 

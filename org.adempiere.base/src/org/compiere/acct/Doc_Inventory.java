@@ -33,6 +33,7 @@ import org.compiere.model.MDocType;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MInventoryLineMA;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MProduct;
 import org.compiere.model.ProductCost;
 import org.compiere.util.DB;
@@ -196,8 +197,21 @@ public class Doc_Inventory extends Doc
 		boolean costAdjustment = MDocType.DOCSUBTYPEINV_CostAdjustment.equals(parentDocSubTypeInv);
 		String docCostingMethod = inventory.getCostingMethod();
 		HashMap<String, BigDecimal> costMap =  new HashMap<String, BigDecimal>();
+		
+		//
+		boolean isDifferentPeriodReversalAccrual = false;
+		if (inventory.getReversal()!=null) {
+			int originalPeriod = MPeriod.getC_Period_ID(inventory.getCtx(), inventory.getMovementDate(),0);
+			MInventory reversal = (MInventory) inventory.getReversal();
+			int reversalPeriod = MPeriod.getC_Period_ID(reversal.getCtx(), reversal.getMovementDate(), 0);
+			if (originalPeriod!=reversalPeriod)
+				isDifferentPeriodReversalAccrual = true;
+		}
+		//
+		
 		for (int i = 0; i < p_lines.length; i++)
 		{
+			MInventoryLine inventoryLine = (MInventoryLine) p_lines[i].getPO();
 			DocLine line = p_lines[i];
 			
 			boolean doPosting = true;
@@ -248,7 +262,7 @@ public class Doc_Inventory extends Doc
 			}
 			else 
 			{
-				if (!isReversal(line))
+				if (!isReversal(line) || isDifferentPeriodReversalAccrual)
 				{
 					product = line.getProduct();
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -279,6 +293,10 @@ public class Doc_Inventory extends Doc
 							costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InventoryLine_ID=?");
 						}
 					} 
+					
+					/*
+					 * 	idempiere origin
+					 * 
 					else
 					{
 						// MZ Goodwill
@@ -290,6 +308,41 @@ public class Doc_Inventory extends Doc
 					{
 						p_Error = "No Costs for " + line.getProduct().getName();
 						return null;
+					}
+					
+					*
+					*	end origin
+					*/
+					
+					
+					//@Stephan TAOWI-430
+					if(!inventoryLine.get_ValueAsBoolean("IsUnitCost"))
+						costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InventoryLine_ID=?");
+					else{
+						//@phie
+						/*
+						 * Add new column unitCostEntered (filled by user) 
+						 * UnitCost is price default (UOM default)
+						 * line.getQty() is qty dynamic based on UOM
+						 */
+						costs = (BigDecimal) inventoryLine.get_Value("UnitCost");
+						costs = costs.multiply(line.getQty());
+						//end phie
+						//costAdjustment = true;
+					}
+					
+					if (!inventoryLine.get_ValueAsBoolean("IsUnitCost") && (costs == null || costs.signum() == 0))
+					{
+						p_Error = "No Costs for " + line.getProduct().getName();
+						return null;
+					}
+					
+					BigDecimal costDetailAmt = costs;
+					if (costAdjustment && getC_Currency_ID() > 0 && getC_Currency_ID() != as.getC_Currency_ID())
+					{
+						costDetailAmt = MConversionRate.convert (getCtx(),
+								costDetailAmt, getC_Currency_ID(), as.getC_Currency_ID(),
+								getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID());
 					}
 				}
 				else
@@ -310,7 +363,7 @@ public class Doc_Inventory extends Doc
 				if (dr != null)
 				{
 					dr.setM_Locator_ID(line.getM_Locator_ID());
-					if (isReversal(line))
+					if (isReversal(line) && isDifferentPeriodReversalAccrual)
 					{
 						//	Set AmtAcctDr from Original Phys.Inventory
 						if (!dr.updateReverseLine (MInventory.Table_ID,
@@ -352,7 +405,7 @@ public class Doc_Inventory extends Doc
 						if (line.getC_Charge_ID() != 0)	//	explicit overwrite for charge
 							cr.setAD_Org_ID(line.getAD_Org_ID());
 			
-						if (isReversal(line))
+						if (isReversal(line) && !isDifferentPeriodReversalAccrual)
 						{
 							//	Set AmtAcctCr from Original Phys.Inventory
 							if (!cr.updateReverseLine (MInventory.Table_ID,
@@ -369,6 +422,23 @@ public class Doc_Inventory extends Doc
 			if (doPosting || costAdjustment)
 			{
 				product = line.getProduct();
+				
+				//@Stephan TAOWI-430
+				if(!inventoryLine.get_ValueAsBoolean("IsUnitCost"))
+					costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InventoryLine_ID=?");
+				else{
+					//@phie
+					/*
+					 * Add new column unitCostEntered (filled by user) 
+					 * UnitCost is price default (UOM default)
+					 * line.getQty() is qty dynamic based on UOM
+					 */
+					costs = (BigDecimal) inventoryLine.get_Value("UnitCost");
+					costs = costs.multiply(line.getQty());
+					//end phie
+					//costAdjustment = true;
+				}
+				
 				BigDecimal costDetailAmt = costAdjustment ? adjustmentDiff : costs;
 				if (costAdjustment && getC_Currency_ID() > 0 && getC_Currency_ID() != as.getC_Currency_ID()) 
 				{

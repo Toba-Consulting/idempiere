@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
@@ -1095,6 +1096,28 @@ public class MInventory extends X_M_Inventory implements DocAction
 			rLine.setQtyInternalUse (oLine.getQtyInternalUse().negate());		
 			rLine.setNewCostPrice(oLine.getCurrentCostPrice());
 			rLine.setCurrentCostPrice(oLine.getNewCostPrice());
+			
+			/*
+			 * 	TCS-721
+			 * 	Custom code for UnitCost
+			 * 	Author @PhieAlbert
+			 * 	Added by @FigoNugroho
+			 */
+			if(oLine.get_ValueAsBoolean("IsUnitCost"))
+			{
+				if(oLine.get_Value("UnitCost") != null)
+					rLine.set_ValueOfColumn("UnitCost", oLine.get_Value("UnitCost"));
+				else 
+					throw new AdempiereException("Is Unis Cost - Unit Cost is null");
+				
+				if(oLine.get_Value("UnitCostEntered") != null)
+					rLine.set_ValueOfColumn("UnitCostEntered", oLine.get_Value("UnitCostEntered"));
+				else 
+					throw new AdempiereException("Is Unis Cost - Unit Cost Entered is null");
+			}
+			/*
+			 * 	End TCS-721
+			 */
 			
 			rLine.saveEx();
 
