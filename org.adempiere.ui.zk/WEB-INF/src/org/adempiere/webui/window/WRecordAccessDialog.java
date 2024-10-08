@@ -39,6 +39,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -184,42 +185,44 @@ public class WRecordAccessDialog extends Window implements EventListener<Event>
 		
 		Grid grid = GridFactory.newGridLayout();
 		this.appendChild(grid);
-		grid.setHflex("min");
+//		grid.setHflex("min");
+		grid.setWidth("450px");
 
 		Rows rows = new Rows();
 		grid.appendChild(rows);
 
 		Row row = new Row();
 		rows.appendChild(row);
-		row.appendChild(bUp);
+		Div div = new Div();
+		div.appendChild(bNew);
+		div.appendChild(bDelete);
+		row.appendChild(div);
 		row.appendChild(new Space());
-		row.appendCellChild(bDown);
+		div = new Div();
+		div.appendChild(bUp);
+		div.appendChild(rowNoLabel);
+		div.appendChild(bDown);
+		row.appendCellChild(div);
 		row.getLastCell().setStyle("text-align: right;");
 
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(roleLabel);
-		row.appendCellChild(roleField, 2);
+		div = new Div();
+		div.appendChild(roleLabel);
+		div.appendChild(roleField);
 		if (ClientInfo.maxWidth(ClientInfo.EXTRA_SMALL_WIDTH-1)) {
 			roleField.setWidth("220px");
 		}
+		row.appendCellChild(div, 2);
 
 		row = new Row();
 		rows.appendChild(row);
-		row.appendChild(cbActive);
-		row.appendChild(cbExclude);
-
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(cbReadOnly);
-		row.appendChild(cbDependent);
-
-		row = new Row();
-		rows.appendChild(row);
-		row.appendChild(bNew);
-		row.appendChild(bDelete);
-		row.appendCellChild(rowNoLabel);
-		row.getLastCell().setStyle("text-align: right;");
+		div = new Div();
+		div.appendChild(cbActive);
+		div.appendChild(cbExclude);
+		div.appendChild(cbReadOnly);
+		div.appendChild(cbDependent);
+		row.appendCellChild(div, 3);
 
 		row = new Row();
 		rows.appendChild(row);	

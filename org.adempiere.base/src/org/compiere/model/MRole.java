@@ -2115,6 +2115,27 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 				if (fullyQualified)
 					orgWhere = orgWhere.replaceAll("AD_Org_ID", tableName + ".AD_Org_ID");
 				retSQL.append(orgWhere);
+				
+				/*
+				 * 	Additional Code from TAOWI-1.1 
+				 */
+				//if (MSysConfig.getValue("TAOWI_USE_ORGTRX").equals("Y")) {
+					//@win add check org trx here
+					if (checkOrgTrx(getAD_Table_ID(tableName))) {
+						retSQL.append(" AND (");
+						if (fullyQualified)
+							retSQL.append(tableName).append(".");
+						retSQL.append(getOrgTrxWhere(rw));
+						retSQL.append(" OR ");
+						if (fullyQualified)
+							retSQL.append(tableName).append(".");
+						retSQL.append("AD_OrgTrx_ID IS NULL) ");
+					}
+				//}
+				
+				/*
+				 * 	End TAOWI-1.1
+				 */
 			}
 		} else {
 			retSQL.append("1=1");
@@ -3459,5 +3480,66 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		makeImmutable();
 		return this;
 	}
+	
+	/*
+	 * 	Additional Code from TAOWI-1.1 
+	 */
+	
+	private boolean checkOrgTrx(int AD_Table_ID) {
+		
+		if (Env.getContext(Env.getCtx(), "$Element_OT").equalsIgnoreCase("Y")) {
+			String sql = "ColumnName='AD_OrgTrx_ID' AND AD_Table_ID=" + AD_Table_ID;
+			boolean match = new Query(Env.getCtx(),MColumn.Table_Name, sql, null).match();
+			return match;
+		}
+		return false;
+	}
+	
+	public String getOrgTrxWhere (boolean rw)
+	{
+		if (isAccessAllOrgs())
+			return null;
+		loadOrgAccess(false);
+		//	Unique Strings
+		HashSet<String> set = new HashSet<String>();
+		if (!rw)
+			set.add("0");
+		//	Positive List
+		for (int i = 0; i < m_orgAccess.length; i++)
+		{
+			if (!rw)
+				set.add(String.valueOf(m_orgAccess[i].AD_Org_ID));
+			else if (!m_orgAccess[i].readOnly)	//	rw
+				set.add(String.valueOf(m_orgAccess[i].AD_Org_ID));
+		}	
+		StringBuilder sb = new StringBuilder();
+		Iterator<String> it = set.iterator();
+		boolean oneOnly = true;
+		while (it.hasNext())
+		{
+			if (sb.length() > 0)
+			{
+				sb.append(",");
+				oneOnly = false;
+			}
+			sb.append(it.next());
+		}
+		if (oneOnly)
+		{
+			if (sb.length() > 0)
+				return "AD_OrgTrx_ID=" + sb.toString();
+			else
+			{
+				log.log(Level.SEVERE, "No Access Org records");
+				return "AD_OrgTrx_ID=-1";	//	No Access Record
+			}
+		}
+		
+		return "AD_OrgTrx_ID IN(" + sb.toString() + ")";
+	}	//	getOrgWhereValue
+	
+	/*
+	 * 	End TAOWI-1.1 
+	 */
 
 }	//	MRole
