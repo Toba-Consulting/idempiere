@@ -176,7 +176,8 @@ public final class WAccountDialog extends Window
 		f_AD_Org_ID, f_Account_ID, f_SubAcct_ID,
 		f_M_Product_ID, f_C_BPartner_ID, f_C_Campaign_ID, f_C_LocFrom_ID, f_C_LocTo_ID,
 		f_C_Project_ID, f_C_SalesRegion_ID, f_AD_OrgTrx_ID, f_C_Activity_ID,
-		f_User1_ID, f_User2_ID;
+		f_User1_ID, f_User2_ID, f_User3_ID, f_User4_ID, f_User5_ID, 
+		f_User6_ID, f_User7_ID, f_User8_ID, f_User9_ID, f_User10_ID;
 	//
 	private Label f_Description = new Label ("");
 
@@ -1206,6 +1207,32 @@ public final class WAccountDialog extends Window
 		int User2_ID = 0;
 		if (f_User2_ID != null && !isEmpty(f_User2_ID.getValue()))
 			User2_ID = ((Integer)f_User2_ID.getValue()).intValue();
+		//	@Stephan TAOWI-1316
+		int User3_ID = 0;
+		if (f_User3_ID != null && !isEmpty(f_User3_ID.getValue()))
+			User3_ID = ((Integer)f_User3_ID.getValue()).intValue();
+		int User4_ID = 0;
+		if (f_User4_ID != null && !isEmpty(f_User4_ID.getValue()))
+			User4_ID = ((Integer)f_User4_ID.getValue()).intValue();
+		int User5_ID = 0;
+		if (f_User5_ID != null && !isEmpty(f_User5_ID.getValue()))
+			User5_ID = ((Integer)f_User5_ID.getValue()).intValue();
+		int User6_ID = 0;
+		if (f_User6_ID != null && !isEmpty(f_User6_ID.getValue()))
+			User6_ID = ((Integer)f_User6_ID.getValue()).intValue();
+		int User7_ID = 0;
+		if (f_User7_ID != null && !isEmpty(f_User7_ID.getValue()))
+			User7_ID = ((Integer)f_User7_ID.getValue()).intValue();
+		int User8_ID = 0;
+		if (f_User8_ID != null && !isEmpty(f_User8_ID.getValue()))
+			User8_ID = ((Integer)f_User8_ID.getValue()).intValue();
+		int User9_ID = 0;
+		if (f_User9_ID != null && !isEmpty(f_User9_ID.getValue()))
+			User9_ID = ((Integer)f_User9_ID.getValue()).intValue();
+		int User10_ID = 0;
+		if (f_User10_ID != null && !isEmpty(f_User10_ID.getValue()))
+			User10_ID = ((Integer)f_User10_ID.getValue()).intValue();
+		//	@Stephan end
 
 		MAccount acct = MAccount.get (Env.getCtx(), m_AD_Client_ID,
 			((Integer)f_AD_Org_ID.getValue()).intValue(),
@@ -1214,7 +1241,11 @@ public final class WAccountDialog extends Window
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
 			C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID,
 			C_Project_ID, C_Campaign_ID, C_Activity_ID,
-			User1_ID, User2_ID, 0, 0, null);
+			User1_ID, User2_ID, User3_ID, User4_ID, User5_ID,
+			User6_ID, User7_ID, User8_ID, User9_ID, User10_ID,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			null);
 		if (acct != null && acct.get_ID() == 0)
 			acct.saveEx();
 

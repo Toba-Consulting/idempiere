@@ -131,7 +131,8 @@ public class MElement extends X_C_Element
 		String treeType = tree.getTreeType();
 		if (ELEMENTTYPE_UserDefined.equals(elementType))
 		{
-			if (X_AD_Tree.TREETYPE_User1.equals(treeType) || X_AD_Tree.TREETYPE_User2.equals(treeType))
+			if (X_AD_Tree.TREETYPE_User1.equals(treeType) || X_AD_Tree.TREETYPE_User2.equals(treeType)
+					|| X_AD_Tree.TREETYPE_User3.equals(treeType) || X_AD_Tree.TREETYPE_User4.equals(treeType))
 				;
 			else
 			{
@@ -149,5 +150,21 @@ public class MElement extends X_C_Element
 		}
 		return true;
 	}	//	beforeSave
+	
+	/**
+	 * 	Get Element Values
+	 * 	@return elementValues
+	 */
+	public int[] getElementValueIDs()
+	{
+
+		int[] list = new Query(getCtx(), I_C_ElementValue.Table_Name, "C_Element_ID=?", get_TrxName())
+		.setParameters(getC_Element_ID())
+		.setOnlyActiveRecords(true)
+		.setOrderBy(MElementValue.COLUMNNAME_Value)
+		.getIDs();
+		//
+		return list;
+	}	//	getPeriod
 	
 }	//	MElement

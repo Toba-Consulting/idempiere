@@ -487,6 +487,38 @@ public class X_C_AcctSchema_Element extends PO implements I_C_AcctSchema_Element
 	public static final String ELEMENTTYPE_UserColumn1 = "X1";
 	/** User Column 2 = X2 */
 	public static final String ELEMENTTYPE_UserColumn2 = "X2";
+	/** User Column 3 = X3 */
+	public static final String ELEMENTTYPE_UserColumn3 = "X3";
+	/** User Column 4 = X4 */
+	public static final String ELEMENTTYPE_UserColumn4 = "X4";
+	/** User Column 5 = X5 */
+	public static final String ELEMENTTYPE_UserColumn5 = "X5";
+	/** User Column 6 = X6 */
+	public static final String ELEMENTTYPE_UserColumn6 = "X6";
+	/** User Column 7 = X7 */
+	public static final String ELEMENTTYPE_UserColumn7 = "X7";
+	/** User Column 8 = X8 */
+	public static final String ELEMENTTYPE_UserColumn8 = "X8";
+	/** User Column 9 = X9 */
+	public static final String ELEMENTTYPE_UserColumn9 = "X9";
+	/** User Column 10 = X10 */
+	public static final String ELEMENTTYPE_UserColumn10 = "X10";
+	/** User Element List 3 = U3 */
+	public static final String ELEMENTTYPE_UserElementList3 = "U3";
+	/** User Element List 4 = U4 */
+	public static final String ELEMENTTYPE_UserElementList4 = "U4";
+	/** User Element List 5 = U5 */
+	public static final String ELEMENTTYPE_UserElementList5 = "U5";
+	/** User Element List 6 = U6 */
+	public static final String ELEMENTTYPE_UserElementList6 = "U6";
+	/** User Element List 7 = U7 */
+	public static final String ELEMENTTYPE_UserElementList7 = "U7";
+	/** User Element List 8 = U8 */
+	public static final String ELEMENTTYPE_UserElementList8 = "U8";
+	/** User Element List 9 = U9 */
+	public static final String ELEMENTTYPE_UserElementList9 = "U9";
+	/** User Element List 10 = U10 */
+	public static final String ELEMENTTYPE_UserElementList10 = "U10";
 	/** Set Type.
 		@param ElementType Element Type (account or user defined)
 	*/

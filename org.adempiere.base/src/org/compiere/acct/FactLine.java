@@ -28,14 +28,20 @@ import java.util.logging.Level;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
+import org.compiere.model.MAssetAddition;
+import org.compiere.model.MAssetTransfer;
+import org.compiere.model.MBankStatement;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
+import org.compiere.model.MMatchInv;
+import org.compiere.model.MMatchPO;
 import org.compiere.model.MMovement;
 import org.compiere.model.MRevenueRecognitionPlan;
 import org.compiere.model.MUOM;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.model.X_Fact_Acct;
+import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -126,8 +132,32 @@ public final class FactLine extends X_Fact_Acct
 		reversal.setC_LocFrom_ID(getC_LocFrom_ID());
 		reversal.setUser1_ID(getUser1_ID());
 		reversal.setUser2_ID(getUser2_ID());
+		//	@Stephan TAOWI-1316
+		reversal.setUser3_ID(getUser3_ID());
+		reversal.setUser4_ID(getUser4_ID());
+		reversal.setUser5_ID(getUser5_ID());
+		reversal.setUser6_ID(getUser6_ID());
+		reversal.setUser7_ID(getUser7_ID());
+		reversal.setUser8_ID(getUser8_ID());
+		reversal.setUser9_ID(getUser9_ID());
+		reversal.setUser10_ID(getUser10_ID());	
 		reversal.setUserElement1_ID(getUserElement1_ID());
 		reversal.setUserElement2_ID(getUserElement2_ID());
+		
+		/*
+		 * 	Additional code from TAOWI-1.1
+		 */
+		reversal.setUserElement3_ID(getUserElement3_ID());
+		reversal.setUserElement4_ID(getUserElement4_ID());
+		reversal.setUserElement5_ID(getUserElement5_ID());
+		reversal.setUserElement6_ID(getUserElement6_ID());
+		reversal.setUserElement7_ID(getUserElement7_ID());
+		reversal.setUserElement8_ID(getUserElement8_ID());
+		reversal.setUserElement9_ID(getUserElement9_ID());
+		reversal.setUserElement10_ID(getUserElement10_ID());
+		/*
+		 * 	End TAOWI-1.1
+		 */
 		
 		return reversal;
 	}	//	reverse
@@ -208,6 +238,174 @@ public final class FactLine extends X_Fact_Acct
 					setUserElement2_ID(ID2);
 			}
 		}
+
+		/*
+		 * 	Additional code from TAOWI-1.1
+		 */
+		MAcctSchemaElement ud3 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn3);
+		if (ud3 != null)
+		{
+			String ColumnName3 = ud3.getDisplayColumnName();
+			if (ColumnName3 != null)
+			{
+				int ID3 = 0;
+				if (m_docLine != null)
+					ID3 = m_docLine.getValue(ColumnName3);
+				if (ID3 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID3 = m_doc.getValue(ColumnName3);
+				}
+				if (ID3 != 0)
+					setUserElement3_ID(ID3);
+			}
+		}		
+		MAcctSchemaElement ud4 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn4);
+		if (ud4 != null)
+		{
+			String ColumnName4 = ud4.getDisplayColumnName();
+			if (ColumnName4 != null)
+			{
+				int ID4 = 0;
+				if (m_docLine != null)
+					ID4 = m_docLine.getValue(ColumnName4);
+				if (ID4 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID4 = m_doc.getValue(ColumnName4);
+				}
+				if (ID4 != 0)
+					setUserElement4_ID(ID4);
+			}
+		}
+		MAcctSchemaElement ud5 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn5);
+		if (ud5 != null)
+		{
+			String ColumnName5 = ud5.getDisplayColumnName();
+			if (ColumnName5 != null)
+			{
+				int ID5 = 0;
+				if (m_docLine != null)
+					ID5 = m_docLine.getValue(ColumnName5);
+				if (ID5 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID5 = m_doc.getValue(ColumnName5);
+				}
+				if (ID5 != 0)
+					setUserElement5_ID(ID5);
+			}
+		}
+		MAcctSchemaElement ud6 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn6);
+		if (ud6 != null)
+		{
+			String ColumnName6 = ud6.getDisplayColumnName();
+			if (ColumnName6 != null)
+			{
+				int ID6 = 0;
+				if (m_docLine != null)
+					ID6 = m_docLine.getValue(ColumnName6);
+				if (ID6 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID6 = m_doc.getValue(ColumnName6);
+				}
+				if (ID6 != 0)
+					setUserElement6_ID(ID6);
+			}
+		}
+		MAcctSchemaElement ud7 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn7);
+		if (ud7 != null)
+		{
+			String ColumnName7 = ud7.getDisplayColumnName();
+			if (ColumnName7 != null)
+			{
+				int ID7 = 0;
+				if (m_docLine != null)
+					ID7 = m_docLine.getValue(ColumnName7);
+				if (ID7 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID7 = m_doc.getValue(ColumnName7);
+				}
+				if (ID7 != 0)
+					setUserElement7_ID(ID7);
+			}
+		}
+		MAcctSchemaElement ud8 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn8);
+		if (ud8 != null)
+		{
+			String ColumnName8 = ud8.getDisplayColumnName();
+			if (ColumnName8 != null)
+			{
+				int ID8 = 0;
+				if (m_docLine != null)
+					ID8 = m_docLine.getValue(ColumnName8);
+				if (ID8 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID8 = m_doc.getValue(ColumnName8);
+				}
+				if (ID8 != 0)
+					setUserElement8_ID(ID8);
+			}
+		}
+		MAcctSchemaElement ud9 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn9);
+		if (ud9 != null)
+		{
+			String ColumnName9 = ud9.getDisplayColumnName();
+			if (ColumnName9 != null)
+			{
+				int ID9 = 0;
+				if (m_docLine != null)
+					ID9 = m_docLine.getValue(ColumnName9);
+				if (ID9 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID9 = m_doc.getValue(ColumnName9);
+				}
+				if (ID9 != 0)
+					setUserElement9_ID(ID9);
+			}
+		}
+		MAcctSchemaElement ud10 = m_acctSchema.getAcctSchemaElement(
+				X_C_AcctSchema_Element.ELEMENTTYPE_UserColumn10);
+		if (ud10 != null)
+		{
+			String ColumnName10 = ud10.getDisplayColumnName();
+			if (ColumnName10 != null)
+			{
+				int ID10 = 0;
+				if (m_docLine != null)
+					ID10 = m_docLine.getValue(ColumnName10);
+				if (ID10 == 0)
+				{
+					if (m_doc == null)
+						throw new IllegalArgumentException("Document not set yet");
+					ID10 = m_doc.getValue(ColumnName10);
+				}
+				if (ID10 != 0)
+					setUserElement10_ID(ID10);
+			}
+		}
+		/*
+		 * 	End TAOWI-1.1
+		 */
+		
 	}   //  setAccount
 
 	/**
@@ -350,6 +548,22 @@ public final class FactLine extends X_Fact_Acct
 	{
 		m_doc = doc;
 		m_docLine = docLine;
+		
+		/*
+		 * 	Additional code from TAOWI-1.1
+		 */
+		
+		//@tegar Novian
+		String DocStatus = null;
+		DocStatus = getDocStatus(m_doc.get_TableName());
+		boolean isReversal = false;
+		isReversal = isReversal(doc.get_TableName());
+		//end
+		
+		/*
+		 * 	End TAOWI-1.1
+		 */
+		
 		//	reset
 		setAD_Org_ID(0);
 		setC_SalesRegion_ID(0);
@@ -371,6 +585,9 @@ public final class FactLine extends X_Fact_Acct
 			setC_Period_ID (m_doc.getC_Period_ID());
 		if (m_docLine != null)
 			setC_Tax_ID (m_docLine.getC_Tax_ID());
+		
+		/* comment out use from TAOWI-1.1
+		
 		//	Description
 		StringBuilder description = new StringBuilder().append(m_doc.getDocumentNo());
 		if (m_docLine != null)
@@ -387,6 +604,19 @@ public final class FactLine extends X_Fact_Acct
 		//	Journal Info
 		setGL_Budget_ID (m_doc.getGL_Budget_ID());
 		setGL_Category_ID (m_doc.getGL_Category_ID());
+		
+		*	end comment out
+		*/ 
+		
+		/*
+		 * 	Change for set description with code from TAOWI-1.1
+		 */
+		// Description
+		setFactDescription(DocStatus,isReversal);
+		/*
+		 * 	End TAOWI-1.1
+		 */
+		
 
 		//	Product
 		if (m_docLine != null)
@@ -458,6 +688,48 @@ public final class FactLine extends X_Fact_Acct
 			setUser2_ID (m_docLine.getUser2_ID());
 		if (getUser2_ID() == 0)
 			setUser2_ID (m_doc.getUser2_ID());
+		//	@Stephan TAOWI-1316
+		// User List 3
+		if (m_docLine != null)
+			setUser3_ID(m_docLine.getUser3_ID());
+		if (getUser3_ID() == 0)
+			setUser3_ID(m_doc.getUser3_ID());
+		// User List 4
+		if (m_docLine != null)
+			setUser4_ID(m_docLine.getUser4_ID());
+		if (getUser4_ID() == 0)
+			setUser4_ID(m_doc.getUser4_ID());
+		// User List 5
+		if (m_docLine != null)
+			setUser5_ID(m_docLine.getUser5_ID());
+		if (getUser5_ID() == 0)
+			setUser5_ID(m_doc.getUser5_ID());
+		// User List 6
+		if (m_docLine != null)
+			setUser6_ID(m_docLine.getUser6_ID());
+		if (getUser6_ID() == 0)
+			setUser6_ID(m_doc.getUser6_ID());
+		// User List 7
+		if (m_docLine != null)
+			setUser7_ID(m_docLine.getUser7_ID());
+		if (getUser7_ID() == 0)
+			setUser7_ID(m_doc.getUser7_ID());
+		// User List 8
+		if (m_docLine != null)
+			setUser8_ID(m_docLine.getUser8_ID());
+		if (getUser8_ID() == 0)
+			setUser8_ID(m_doc.getUser8_ID());
+		// User List 9
+		if (m_docLine != null)
+			setUser9_ID(m_docLine.getUser9_ID());
+		if (getUser9_ID() == 0)
+			setUser9_ID(m_doc.getUser9_ID());
+		// User List 10
+		if (m_docLine != null)
+			setUser10_ID(m_docLine.getUser10_ID());
+		if (getUser10_ID() == 0)
+			setUser10_ID(m_doc.getUser10_ID());
+		//	@Stephan end
 		//	References in setAccount
 	}   //  setDocumentInfo
 
@@ -958,6 +1230,24 @@ public final class FactLine extends X_Fact_Acct
 				setUser1_ID (m_acct.getUser1_ID());
 			if (getUser2_ID() == 0)
 				setUser2_ID (m_acct.getUser2_ID());
+			//	@Stephan TAOWI-1316
+			if (getUser3_ID() == 0)
+				setUser3_ID (m_acct.getUser3_ID());
+			if (getUser4_ID() == 0)
+				setUser4_ID (m_acct.getUser4_ID());
+			if (getUser5_ID() == 0)
+				setUser5_ID (m_acct.getUser5_ID());
+			if (getUser6_ID() == 0)
+				setUser6_ID (m_acct.getUser6_ID());
+			if (getUser7_ID() == 0)
+				setUser7_ID (m_acct.getUser7_ID());
+			if (getUser8_ID() == 0)
+				setUser8_ID (m_acct.getUser8_ID());
+			if (getUser9_ID() == 0)
+				setUser9_ID (m_acct.getUser9_ID());
+			if (getUser10_ID() == 0)
+				setUser10_ID (m_acct.getUser10_ID());
+			//	@Stephan end			
 			
 			//  Revenue Recognition for AR/AP Invoices
 			if ((m_doc.getDocumentType().equals(Doc.DOCTYPE_ARInvoice) || m_doc.getDocumentType().equals(Doc.DOCTYPE_APInvoice)) 
@@ -974,8 +1264,16 @@ public final class FactLine extends X_Fact_Acct
 						getC_LocFrom_ID(), getC_LocTo_ID(), 
 						getC_SalesRegion_ID(), getC_Project_ID(),
 						getC_Campaign_ID(), getC_Activity_ID(), 
-						getUser1_ID(), getUser2_ID(), 
-						getUserElement1_ID(), getUserElement2_ID())
+						getUser1_ID(), getUser2_ID(),
+						getUser3_ID(), getUser4_ID(),
+						getUser5_ID(), getUser6_ID(),
+						getUser7_ID(), getUser8_ID(),
+						getUser9_ID(), getUser10_ID(),
+						getUserElement1_ID(), getUserElement2_ID(),
+						getUserElement3_ID(), getUserElement4_ID(), 
+						getUserElement5_ID(), getUserElement6_ID(),
+						getUserElement7_ID(), getUserElement8_ID(),
+						getUserElement9_ID(), getUserElement10_ID())
 					);
 			}
 		}
@@ -1019,7 +1317,12 @@ public final class FactLine extends X_Fact_Acct
 		int M_Product_ID, int C_BPartner_ID, int AD_OrgTrx_ID,
 		int C_LocFrom_ID, int C_LocTo_ID, int C_SRegion_ID, int C_Project_ID,
 		int	C_Campaign_ID, int C_Activity_ID, 
-		int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID)
+		int User1_ID, int User2_ID,
+		int User3_ID, int User4_ID, int User5_ID, int User6_ID,
+		int User7_ID, int User8_ID, int User9_ID, int User10_ID,
+		int UserElement1_ID, int UserElement2_ID,
+		int UserElement3_ID, int UserElement4_ID, int UserElement5_ID, int UserElement6_ID,
+		int UserElement7_ID, int UserElement8_ID, int UserElement9_ID, int UserElement10_ID)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("From Account_ID=" + Account_ID);
 		//  get VC for P_Revenue (from Product)
@@ -1027,7 +1330,12 @@ public final class FactLine extends X_Fact_Acct
 			AD_Client_ID, AD_Org_ID, getC_AcctSchema_ID(), Account_ID, C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID, 
 			C_Project_ID, C_Campaign_ID, C_Activity_ID, 
-			User1_ID, User2_ID, UserElement1_ID, UserElement2_ID, get_TrxName());
+			User1_ID, User2_ID,
+			User3_ID, User4_ID, User5_ID, User6_ID,
+			User7_ID, User8_ID, User9_ID, User10_ID,
+			UserElement1_ID, UserElement2_ID, 
+			UserElement3_ID, UserElement4_ID, UserElement5_ID, UserElement6_ID, 
+			UserElement7_ID, UserElement8_ID, UserElement9_ID, UserElement10_ID, get_TrxName());
 		if (revenue != null && revenue.get_ID() == 0)
 			revenue.saveEx();
 		if (revenue == null || revenue.get_ID() == 0)
@@ -1086,7 +1394,12 @@ public final class FactLine extends X_Fact_Acct
 				AD_Client_ID, AD_Org_ID, getC_AcctSchema_ID(), new_Account_ID, C_SubAcct_ID,
 				M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID, 
 				C_Project_ID, C_Campaign_ID, C_Activity_ID, 
-				User1_ID, User2_ID, UserElement1_ID, UserElement2_ID, get_TrxName());
+				User1_ID, User2_ID, 
+				User3_ID, User4_ID, User5_ID, User6_ID,
+				User7_ID, User8_ID, User9_ID, User10_ID,
+				UserElement1_ID, UserElement2_ID,
+				UserElement3_ID, UserElement4_ID, UserElement5_ID, UserElement6_ID,
+				UserElement7_ID, UserElement8_ID, UserElement9_ID, UserElement10_ID, get_TrxName());
 
 		MRevenueRecognitionPlan plan = new MRevenueRecognitionPlan(getCtx(), 0, get_TrxName());
 		plan.setAD_Org_ID(AD_Org_ID);
@@ -1142,6 +1455,21 @@ public final class FactLine extends X_Fact_Acct
 	{
 		boolean success = false;
 
+		/*
+		 * 	Additional code TAOWI-1.1
+		 */
+		
+		//@tegar Novian
+		String DocStatus = null;
+		DocStatus = getDocStatus(m_doc.get_TableName());
+		boolean isReversal = false;
+		isReversal = isReversal(m_doc.get_TableName());
+		//end
+		
+		/*
+		 * 	End TAOWI-1.1
+		 */
+		
 		StringBuilder sql = new StringBuilder("SELECT * ")
 			.append("FROM Fact_Acct ")
 			.append("WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=?")
@@ -1227,10 +1555,31 @@ public final class FactLine extends X_Fact_Acct
 				setM_Locator_ID(fact.getM_Locator_ID());
 				setUser1_ID(fact.getUser1_ID());
 				setUser2_ID(fact.getUser2_ID());
+				setUser3_ID(fact.getUser3_ID());
+				setUser4_ID(fact.getUser4_ID());
+				setUser5_ID(fact.getUser5_ID());
+				setUser6_ID(fact.getUser6_ID());
+				setUser7_ID(fact.getUser7_ID());
+				setUser8_ID(fact.getUser8_ID());
+				setUser9_ID(fact.getUser9_ID());
+				setUser10_ID(fact.getUser10_ID());
 				setC_UOM_ID(fact.getC_UOM_ID());
 				setC_Tax_ID(fact.getC_Tax_ID());
 				//	Org for cross charge
 				setAD_Org_ID (fact.getAD_Org_ID());
+				
+				/*
+				 * 	Additional code from TAOWI-1.1
+				 */
+				
+				//@tegar Novian
+				setFactDescription(DocStatus,isReversal);
+				//end
+				
+				/*
+				 * 	End TAOWI-1.1
+				 */
+				
 				if (fact.getQty() != null) {
 					if (getC_UOM_ID() != 0)
 					{
@@ -1259,4 +1608,109 @@ public final class FactLine extends X_Fact_Acct
 		return success;
 	}   //  updateReverseLine
 
+	
+	/*
+	 * 	Additional code from TAOWI-1.1
+	 */
+	
+	//@tegar Novian
+	private String getDocStatus (String TableName){
+		StringBuilder sql = new StringBuilder();
+			
+		String Docstatus = "";
+		int Record_ID = 0;
+		Record_ID = getRecord_ID();
+			
+		if(!TableName.equalsIgnoreCase(MMatchInv.Table_Name) 
+				&& !TableName.equalsIgnoreCase(MMatchPO.Table_Name)){
+				
+			sql.append("SELECT DocStatus ");
+			sql.append(" FROM " + TableName);
+			sql.append(" WHERE "+TableName + "_ID = ?");
+			
+			Docstatus = DB.getSQLValueStringEx(get_TrxName(), sql.toString(),Record_ID);
+			
+		}
+		return Docstatus;
+	}
+	//end
+		
+	//@tegar Novian
+	private boolean isReversal (String TableName){
+		StringBuilder sql = new StringBuilder();
+		boolean isReversal = false;
+			
+		int Docstatus = 0;
+		int Record_ID = 0;
+		Record_ID = getRecord_ID();
+			
+		if (!TableName.equalsIgnoreCase(MBankStatement.Table_Name)
+				&&!TableName.equalsIgnoreCase(MAssetAddition.Table_Name)
+				&&!TableName.equalsIgnoreCase(MAssetTransfer.Table_Name)){
+			
+			sql.append("SELECT Reversal_ID ");
+			sql.append(" FROM " + TableName);
+			sql.append(" WHERE "+TableName + "_ID = ?");
+			
+			Docstatus = DB.getSQLValueEx(get_TrxName(), sql.toString(),Record_ID);
+		}
+		
+		if (Docstatus != 0)
+			isReversal = true;
+		
+		return isReversal;
+	}
+	//end	
+	
+	//@tegar Novian
+	private void setFactDescription(String DocStatus, boolean isReversal){
+
+		String msgReverse = null;
+		//StringBuilder description = new StringBuilder().append("[").append(m_doc.getDocumentNo());
+		
+		StringBuilder description = new StringBuilder();
+		if (m_docLine != null)
+		{
+			/*
+			description.append(" #").append(m_docLine.getLine()).append("]");
+			if (m_docLine.getDescription() != null)
+				description.append(" [").append(m_docLine.getDescription()).append("]");
+			else if (m_doc.getDescription() != null && m_doc.getDescription().length() > 0)
+				description.append(" [").append(m_doc.getDescription()).append("]");	
+			*/
+			if (m_docLine.getDescription() != null)
+				description.append(m_docLine.getDescription());
+			else if (m_doc.getDescription() != null && m_doc.getDescription().length() > 0)
+				description.append(m_doc.getDescription());		
+		}
+		else {
+			/*
+			description.append("]");
+			if (m_doc.getDescription() != null && m_doc.getDescription().length() > 0)
+			description.append(" [").append(m_doc.getDescription()).append("]");
+			*/
+			if (m_doc.getDescription() != null && m_doc.getDescription().length() > 0)
+				description.append(m_doc.getDescription());
+		}
+		if (DocStatus.equals(DocAction.STATUS_Reversed)){
+			msgReverse = " [REVERSED]";
+			description.append(msgReverse);
+		}
+		else if(DocStatus.equals(DocAction.STATUS_Completed)&& isReversal){
+			msgReverse = " [REVERSED]";
+			description.append(msgReverse);
+		}
+		
+		setDescription(description.toString());
+		if(m_doc != null)
+			set_CustomColumn("DocumentNo", m_doc.getDocumentNo());
+		if(m_docLine != null)
+			set_CustomColumn("Line", m_docLine.getLine());
+	}
+	//end
+	
+	/*
+	 * 	End TAOWI-1.1
+	 */
+	
 }	//	FactLine

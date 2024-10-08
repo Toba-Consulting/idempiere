@@ -120,6 +120,24 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 			return I_C_ValidCombination.COLUMNNAME_UserElement1_ID;
 		else if (elementType.equals(ELEMENTTYPE_UserColumn2))
 			return I_C_ValidCombination.COLUMNNAME_UserElement2_ID;
+		//	@Stephan TAOWI-1316
+		else if (elementType.equals(ELEMENTTYPE_UserColumn3))
+			return I_C_ValidCombination.COLUMNNAME_UserElement3_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn4))
+			return I_C_ValidCombination.COLUMNNAME_UserElement4_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn5))
+			return I_C_ValidCombination.COLUMNNAME_UserElement5_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn6))
+			return I_C_ValidCombination.COLUMNNAME_UserElement6_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn7))
+			return I_C_ValidCombination.COLUMNNAME_UserElement7_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn8))
+			return I_C_ValidCombination.COLUMNNAME_UserElement8_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn9))
+			return I_C_ValidCombination.COLUMNNAME_UserElement9_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserColumn10))
+			return I_C_ValidCombination.COLUMNNAME_UserElement10_ID;
+		//	@Stephan end
 		//
 		return "";
 	}   //  getColumnName
@@ -421,7 +439,11 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 	public String getDisplayColumnName()
 	{
 		String et = getElementType();
-		if (ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et))
+		if (ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)
+				|| ELEMENTTYPE_UserColumn3.equals(et) || ELEMENTTYPE_UserColumn4.equals(et) 
+				|| ELEMENTTYPE_UserColumn5.equals(et) || ELEMENTTYPE_UserColumn6.equals(et) 
+				|| ELEMENTTYPE_UserColumn7.equals(et) || ELEMENTTYPE_UserColumn8.equals(et) 
+				|| ELEMENTTYPE_UserColumn9.equals(et) || ELEMENTTYPE_UserColumn10.equals(et))
 		{
 			if (m_ColumnName == null)
 				m_ColumnName = MColumn.getColumnName(getCtx(), getAD_Column_ID());

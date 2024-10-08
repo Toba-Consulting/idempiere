@@ -180,8 +180,24 @@ public class AcctSchemaCopyAcct extends SvrProcess
 		int C_Activity_ID = 0;
 		int User1_ID = 0;
 		int User2_ID = 0;
+		int User3_ID = 0;
+		int User4_ID = 0;
+		int User5_ID = 0;
+		int User6_ID = 0;
+		int User7_ID = 0;
+		int User8_ID = 0;
+		int User9_ID = 0;
+		int User10_ID = 0;
 		int UserElement1_ID = 0;
 		int UserElement2_ID = 0;
+		int UserElement3_ID = 0;
+		int UserElement4_ID = 0;
+		int UserElement5_ID = 0;
+		int UserElement6_ID = 0;
+		int UserElement7_ID = 0;
+		int UserElement8_ID = 0;
+		int UserElement9_ID = 0;
+		int UserElement10_ID = 0;
 		//
 		//  Active Elements
 		MAcctSchemaElement[] elements = targetAS.getAcctSchemaElements();
@@ -218,10 +234,44 @@ public class AcctSchemaCopyAcct extends SvrProcess
 				User1_ID = sourceAcct.getUser1_ID();
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
 				User2_ID = sourceAcct.getUser2_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList3))
+				User3_ID = sourceAcct.getUser3_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList4))
+				User4_ID = sourceAcct.getUser4_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList5))
+				User5_ID = sourceAcct.getUser5_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList6))
+				User6_ID = sourceAcct.getUser6_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList7))
+				User7_ID = sourceAcct.getUser7_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList8))
+				User8_ID = sourceAcct.getUser8_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList9))
+				User9_ID = sourceAcct.getUser9_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList10))
+				User10_ID = sourceAcct.getUser10_ID();
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn1))
 				UserElement1_ID = sourceAcct.getUserElement1_ID();
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn2))
 				UserElement2_ID = sourceAcct.getUserElement2_ID();
+			//	@Stephan TAOWI-1316
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn3))
+				UserElement3_ID = sourceAcct.getUserElement3_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn4))
+				UserElement4_ID = sourceAcct.getUserElement4_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn5))
+				UserElement5_ID = sourceAcct.getUserElement5_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn6))
+				UserElement6_ID = sourceAcct.getUserElement6_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn7))
+				UserElement7_ID = sourceAcct.getUserElement7_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn8))
+				UserElement8_ID = sourceAcct.getUserElement8_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn9))
+				UserElement9_ID = sourceAcct.getUserElement9_ID();
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn10))
+				UserElement10_ID = sourceAcct.getUserElement10_ID();
+			//	@Stephan end
 			//	No UserElement
 		}
 		//
@@ -230,7 +280,10 @@ public class AcctSchemaCopyAcct extends SvrProcess
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
 			C_LocFrom_ID, C_LocTo_ID, C_SalesRegion_ID, 
 			C_Project_ID, C_Campaign_ID, C_Activity_ID,
-			User1_ID, User2_ID, UserElement1_ID, UserElement2_ID,
+			User1_ID, User2_ID, User3_ID, User4_ID, User5_ID, 
+			User6_ID, User7_ID, User8_ID, User9_ID, User10_ID, 
+			UserElement1_ID, UserElement2_ID, UserElement3_ID, UserElement4_ID, UserElement5_ID, 
+			UserElement6_ID, UserElement7_ID, UserElement8_ID, UserElement9_ID, UserElement10_ID, 
 			get_TrxName());
 	}	//	createAccount
 	

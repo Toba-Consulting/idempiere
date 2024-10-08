@@ -54,15 +54,23 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 			int m_Product_ID, int c_BPartner_ID, int ad_OrgTrx_ID,
 			int c_LocFrom_ID, int c_LocTo_ID, int c_SalesRegion_ID,
 			int c_Project_ID, int c_Campaign_ID, int c_Activity_ID,
-			int user1_ID, int user2_ID, int userElement1_ID,
-			int userElement2_ID) {
+			int User1_ID, int User2_ID,
+			int User3_ID, int User4_ID, int User5_ID, int User6_ID,
+			int User7_ID, int User8_ID, int User9_ID, int User10_ID,
+			int UserElement1_ID, int UserElement2_ID,
+			int UserElement3_ID, int UserElement4_ID, int UserElement5_ID, int UserElement6_ID,
+			int UserElement7_ID, int UserElement8_ID, int UserElement9_ID, int UserElement10_ID) {
 		return get(ctx, ad_Client_ID, ad_Org_ID,
 				c_AcctSchema_ID, new_account_id, c_SubAcct_ID,
 				m_Product_ID, c_BPartner_ID, ad_OrgTrx_ID,
 				c_LocFrom_ID, c_LocTo_ID, c_SalesRegion_ID,
 				c_Project_ID, c_Campaign_ID, c_Activity_ID,
-				user1_ID, user2_ID, userElement1_ID,
-				userElement2_ID, null);
+				User1_ID, User2_ID,
+				User3_ID, User4_ID, User5_ID, User6_ID,
+				User7_ID, User8_ID, User9_ID, User10_ID,
+				UserElement1_ID, UserElement2_ID,
+				UserElement3_ID, UserElement4_ID, UserElement5_ID, UserElement6_ID,
+				UserElement7_ID, UserElement8_ID, UserElement9_ID, UserElement10_ID, null);
 	}
 	
 	/**
@@ -95,7 +103,12 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 		int M_Product_ID, int C_BPartner_ID, int AD_OrgTrx_ID, 
 		int C_LocFrom_ID, int C_LocTo_ID, int C_SalesRegion_ID, 
 		int C_Project_ID, int C_Campaign_ID, int C_Activity_ID,
-		int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID,
+		int User1_ID, int User2_ID,
+		int User3_ID, int User4_ID, int User5_ID, int User6_ID,
+		int User7_ID, int User8_ID, int User9_ID, int User10_ID,
+		int UserElement1_ID, int UserElement2_ID,
+		int UserElement3_ID, int UserElement4_ID, int UserElement5_ID, int UserElement6_ID,
+		int UserElement7_ID, int UserElement8_ID, int UserElement9_ID, int UserElement10_ID,
 		String trxName)
 	{
 		StringBuilder info = new StringBuilder();
@@ -214,6 +227,119 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 			whereClause.append(" AND UserElement2_ID=?");
 			params.add(UserElement2_ID);
 		}
+		//	@Stephan TAOWI-1316
+		if (User3_ID == 0)
+			whereClause.append(" AND User3_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User3_ID=?");
+			params.add(User3_ID);
+		}
+		if (User4_ID == 0)
+			whereClause.append(" AND User4_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User4_ID=?");
+			params.add(User4_ID);
+		}
+		if (User5_ID == 0)
+			whereClause.append(" AND User5_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User5_ID=?");
+			params.add(User5_ID);
+		}
+		if (User6_ID == 0)
+			whereClause.append(" AND User6_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User6_ID=?");
+			params.add(User6_ID);
+		}
+		if (User7_ID == 0)
+			whereClause.append(" AND User7_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User7_ID=?");
+			params.add(User7_ID);
+		}
+		if (User8_ID == 0)
+			whereClause.append(" AND User8_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User8_ID=?");
+			params.add(User8_ID);
+		}
+		if (User9_ID == 0)
+			whereClause.append(" AND User9_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User9_ID=?");
+			params.add(User9_ID);
+		}
+		if (User10_ID == 0)
+			whereClause.append(" AND User10_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND User10_ID=?");
+			params.add(User10_ID);
+		}
+		if (UserElement3_ID == 0)
+			whereClause.append(" AND UserElement3_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement3_ID=?");
+			params.add(UserElement3_ID);
+		}
+		if (UserElement4_ID == 0)
+			whereClause.append(" AND UserElement4_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement4_ID=?");
+			params.add(UserElement4_ID);
+		}
+		if (UserElement5_ID == 0)
+			whereClause.append(" AND UserElement5_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement5_ID=?");
+			params.add(UserElement5_ID);
+		}
+		if (UserElement6_ID == 0)
+			whereClause.append(" AND UserElement6_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement6_ID=?");
+			params.add(UserElement6_ID);
+		}
+		if (UserElement7_ID == 0)
+			whereClause.append(" AND UserElement7_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement7_ID=?");
+			params.add(UserElement7_ID);
+		}
+		if (UserElement8_ID == 0)
+			whereClause.append(" AND UserElement8_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement8_ID=?");
+			params.add(UserElement8_ID);
+		}
+		if (UserElement9_ID == 0)
+			whereClause.append(" AND UserElement9_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement9_ID=?");
+			params.add(UserElement9_ID);
+		}
+		if (UserElement10_ID == 0)
+			whereClause.append(" AND UserElement10_ID IS NULL");
+		else
+		{
+			whereClause.append(" AND UserElement10_ID=?");
+			params.add(UserElement10_ID);
+		}
 		
 		MAccount existingAccount = new Query(ctx, MAccount.Table_Name, whereClause.toString(), trxName)
 										.setParameters(params)
@@ -242,8 +368,24 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 		newAccount.setC_Activity_ID(C_Activity_ID);
 		newAccount.setUser1_ID(User1_ID);
 		newAccount.setUser2_ID(User2_ID);
+		newAccount.setUser3_ID(User3_ID);
+		newAccount.setUser4_ID(User4_ID);
+		newAccount.setUser5_ID(User5_ID);
+		newAccount.setUser6_ID(User6_ID);
+		newAccount.setUser7_ID(User7_ID);
+		newAccount.setUser8_ID(User8_ID);
+		newAccount.setUser9_ID(User9_ID);
+		newAccount.setUser10_ID(User10_ID);
 		newAccount.setUserElement1_ID(UserElement1_ID);
 		newAccount.setUserElement2_ID(UserElement2_ID);
+		newAccount.setUserElement3_ID(UserElement3_ID);
+		newAccount.setUserElement4_ID(UserElement4_ID);
+		newAccount.setUserElement5_ID(UserElement5_ID);
+		newAccount.setUserElement6_ID(UserElement6_ID);
+		newAccount.setUserElement7_ID(UserElement7_ID);
+		newAccount.setUserElement8_ID(UserElement8_ID);
+		newAccount.setUserElement9_ID(UserElement9_ID);
+		newAccount.setUserElement10_ID(UserElement10_ID);
 		//
 		if (!newAccount.save())
 		{
@@ -283,7 +425,12 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 			fa.getM_Product_ID(), fa.getC_BPartner_ID(), fa.getAD_OrgTrx_ID(), 
 			fa.getC_LocFrom_ID(), fa.getC_LocTo_ID(), fa.getC_SalesRegion_ID(), 
 			fa.getC_Project_ID(), fa.getC_Campaign_ID(), fa.getC_Activity_ID(),
-			fa.getUser1_ID(), fa.getUser2_ID(), fa.getUserElement1_ID(), fa.getUserElement2_ID());
+			fa.getUser1_ID(), fa.getUser2_ID(),
+			fa.getUser3_ID(), fa.getUser4_ID(), fa.getUser5_ID(), fa.getUser6_ID(),
+			fa.getUser7_ID(), fa.getUser8_ID(), fa.getUser9_ID(), fa.getUser10_ID(),
+			fa.getUserElement1_ID(), fa.getUserElement2_ID(),
+			fa.getUserElement3_ID(), fa.getUserElement4_ID(), fa.getUserElement5_ID(), fa.getUserElement6_ID(),
+			fa.getUserElement7_ID(), fa.getUserElement8_ID(), fa.getUserElement9_ID(), fa.getUserElement10_ID());
 		return acct;
 	}	//	get
 	
@@ -352,6 +499,24 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 				vc.setUserElement1_ID(defaultValue);
 			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn2) && setValue)
 				vc.setUserElement2_ID(defaultValue);
+			//	@Stephan TAOWI-1316
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn3) && setValue)
+				vc.setUserElement3_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn4) && setValue)
+				vc.setUserElement4_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn5) && setValue)
+				vc.setUserElement5_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn6) && setValue)
+				vc.setUserElement6_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn7) && setValue)
+				vc.setUserElement7_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn8) && setValue)
+				vc.setUserElement8_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn9) && setValue)
+				vc.setUserElement9_ID(defaultValue);
+			else if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_UserColumn10) && setValue)
+				vc.setUserElement10_ID(defaultValue);
+			//	@Stephan end			
 		}
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("Client_ID="
 			+ vc.getAD_Client_ID() + ", Org_ID=" + vc.getAD_Org_ID()
@@ -542,10 +707,44 @@ public class MAccount extends X_C_ValidCombination implements ImmutablePOSupport
 				sb.append(",User1_ID=").append(getUser1_ID());
 			if (getUser2_ID() != 0)
 				sb.append(",User2_ID=").append(getUser2_ID());
+			if (getUser3_ID() != 0)
+				sb.append(",User3_ID=").append(getUser3_ID());
+			if (getUser4_ID() != 0)
+				sb.append(",User4_ID=").append(getUser4_ID());
+			if (getUser5_ID() != 0)
+				sb.append(",User5_ID=").append(getUser5_ID());
+			if (getUser6_ID() != 0)
+				sb.append(",User6_ID=").append(getUser6_ID());
+			if (getUser7_ID() != 0)
+				sb.append(",User7_ID=").append(getUser7_ID());
+			if (getUser8_ID() != 0)
+				sb.append(",User8_ID=").append(getUser8_ID());
+			if (getUser9_ID() != 0)
+				sb.append(",User9_ID=").append(getUser9_ID());
+			if (getUser10_ID() != 0)
+				sb.append(",User10_ID=").append(getUser10_ID());
 			if (getUserElement1_ID() != 0)
 				sb.append(",UserElement1_ID=").append(getUserElement1_ID());
 			if (getUserElement2_ID() != 0)
 				sb.append(",UserElement2_ID=").append(getUserElement2_ID());
+			//	@Stephan TAOWI-1316
+			if (getUserElement3_ID() != 0)
+				sb.append(",UserElement3_ID=").append(getUserElement3_ID());
+			if (getUserElement4_ID() != 0)
+				sb.append(",UserElement4_ID=").append(getUserElement4_ID());
+			if (getUserElement5_ID() != 0)
+				sb.append(",UserElement5_ID=").append(getUserElement5_ID());
+			if (getUserElement6_ID() != 0)
+				sb.append(",UserElement6_ID=").append(getUserElement6_ID());
+			if (getUserElement7_ID() != 0)
+				sb.append(",UserElement7_ID=").append(getUserElement7_ID());
+			if (getUserElement8_ID() != 0)
+				sb.append(",UserElement8_ID=").append(getUserElement8_ID());
+			if (getUserElement9_ID() != 0)
+				sb.append(",UserElement9_ID=").append(getUserElement9_ID());
+			if (getUserElement10_ID() != 0)
+				sb.append(",UserElement10_ID=").append(getUserElement10_ID());
+			//	@Stephan end
 		}
 		sb.append("]");
 		return sb.toString();

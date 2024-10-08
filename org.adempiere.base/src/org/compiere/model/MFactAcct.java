@@ -141,7 +141,12 @@ public class MFactAcct extends X_Fact_Acct
 			getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), 
 			getC_LocFrom_ID(), getC_LocTo_ID(), getC_SalesRegion_ID(), 
 			getC_Project_ID(), getC_Campaign_ID(), getC_Activity_ID(),
-			getUser1_ID(), getUser2_ID(), getUserElement1_ID(), getUserElement2_ID(),
+			getUser1_ID(), getUser2_ID(), 
+			getUser3_ID(), getUser4_ID(), getUser5_ID(), getUser6_ID(),
+			getUser7_ID(), getUser8_ID(), getUser9_ID(), getUser10_ID(),
+			getUserElement1_ID(), getUserElement2_ID(),
+			getUserElement3_ID(), getUserElement4_ID(), getUserElement5_ID(), getUserElement6_ID(),
+			getUserElement7_ID(), getUserElement8_ID(), getUserElement9_ID(), getUserElement10_ID(),
 			get_TrxName());
 		if (acct != null && acct.get_ID() == 0)
 			acct.saveEx();

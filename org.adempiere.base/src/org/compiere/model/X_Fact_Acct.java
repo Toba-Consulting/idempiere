@@ -1101,6 +1101,254 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+	
+	public org.compiere.model.I_C_ElementValue getUser3() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser3_ID(), get_TrxName());	}
+
+	/** Set User Element List 3.
+		@param User3_ID 
+		User defined list element #3
+	  */
+	public void setUser3_ID (int User3_ID)
+	{
+		if (User3_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User3_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User3_ID, Integer.valueOf(User3_ID));
+	}
+
+	/** Get User Element List 3.
+		@return User defined list element #3
+	  */
+	public int getUser3_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User3_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser4() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser4_ID(), get_TrxName());	}
+
+	/** Set User Element List 4.
+		@param User4_ID 
+		User defined list element #4
+	  */
+	public void setUser4_ID (int User4_ID)
+	{
+		if (User4_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User4_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User4_ID, Integer.valueOf(User4_ID));
+	}
+
+	/** Get User Element List 4.
+		@return User defined list element #4
+	  */
+	public int getUser4_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User4_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser5() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser5_ID(), get_TrxName());	}
+
+	/** Set User Element List 5.
+		@param User5_ID 
+		User defined list element #5
+	  */
+	public void setUser5_ID (int User5_ID)
+	{
+		if (User5_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User5_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User5_ID, Integer.valueOf(User5_ID));
+	}
+
+	/** Get User Element List 5.
+		@return User defined list element #5
+	  */
+	public int getUser5_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User5_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser6() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser6_ID(), get_TrxName());	}
+
+	/** Set User Element List 6.
+		@param User6_ID 
+		User defined list element #6
+	  */
+	public void setUser6_ID (int User6_ID)
+	{
+		if (User6_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User6_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User6_ID, Integer.valueOf(User6_ID));
+	}
+
+	/** Get User Element List 6.
+		@return User defined list element #6
+	  */
+	public int getUser6_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User6_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser7() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser7_ID(), get_TrxName());	}
+
+	/** Set User Element List 7.
+		@param User7_ID 
+		User defined list element #7
+	  */
+	public void setUser7_ID (int User7_ID)
+	{
+		if (User7_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User7_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User7_ID, Integer.valueOf(User7_ID));
+	}
+
+	/** Get User Element List 7.
+		@return User defined list element #7
+	  */
+	public int getUser7_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User7_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser8() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser8_ID(), get_TrxName());	}
+
+	/** Set User Element List 8.
+		@param User8_ID 
+		User defined list element #8
+	  */
+	public void setUser8_ID (int User8_ID)
+	{
+		if (User8_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User8_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User8_ID, Integer.valueOf(User8_ID));
+	}
+
+	/** Get User Element List 8.
+		@return User defined list element #8
+	  */
+	public int getUser8_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User8_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ElementValue getUser9() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser9_ID(), get_TrxName());	}
+
+	/** Set User Element List 9.
+		@param User9_ID 
+		User defined list element #9
+	  */
+	public void setUser9_ID (int User9_ID)
+	{
+		if (User9_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User9_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User9_ID, Integer.valueOf(User9_ID));
+	}
+
+	/** Get User Element List 9.
+		@return User defined list element #9
+	  */
+	public int getUser9_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User9_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	
+	public org.compiere.model.I_C_ElementValue getUser10() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_Name)
+			.getPO(getUser10_ID(), get_TrxName());	}
+
+	/** Set User Element List 10.
+		@param User10_ID 
+		User defined list element #10
+	  */
+	public void setUser10_ID (int User10_ID)
+	{
+		if (User10_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_User10_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_User10_ID, Integer.valueOf(User10_ID));
+	}
+
+	/** Get User Element List 10.
+		@return User defined list element #10
+	  */
+	public int getUser10_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_User10_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set User Column 10.
+		@param UserElement10_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement10_ID (int UserElement10_ID)
+	{
+		if (UserElement10_ID < 1) 
+			set_Value (COLUMNNAME_UserElement10_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement10_ID, Integer.valueOf(UserElement10_ID));
+	}
+
+	/** Get User Column 10.
+		@return User defined accounting Element
+	  */
+	public int getUserElement10_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement10_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}	
 
 	/** Set User Column 1.
 		@param UserElement1_ID User defined accounting Element
@@ -1141,6 +1389,167 @@ public class X_Fact_Acct extends PO implements I_Fact_Acct, I_Persistent
 	public int getUserElement2_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 3.
+	@param UserElement3_ID 
+	User defined accounting Element
+	  */
+	public void setUserElement3_ID (int UserElement3_ID)
+	{
+		if (UserElement3_ID < 1) 
+			set_Value (COLUMNNAME_UserElement3_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement3_ID, Integer.valueOf(UserElement3_ID));
+	}
+	
+	/** Get User Column 3.
+		@return User defined accounting Element
+	  */
+	public int getUserElement3_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement3_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 4.
+		@param UserElement4_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement4_ID (int UserElement4_ID)
+	{
+		if (UserElement4_ID < 1) 
+			set_Value (COLUMNNAME_UserElement4_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement4_ID, Integer.valueOf(UserElement4_ID));
+	}
+	
+	/** Get User Column 4.
+		@return User defined accounting Element
+	  */
+	public int getUserElement4_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement4_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 5.
+		@param UserElement5_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement5_ID (int UserElement5_ID)
+	{
+		if (UserElement5_ID < 1) 
+			set_Value (COLUMNNAME_UserElement5_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement5_ID, Integer.valueOf(UserElement5_ID));
+	}
+	
+	/** Get User Column 5.
+		@return User defined accounting Element
+	  */
+	public int getUserElement5_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement5_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 6.
+		@param UserElement6_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement6_ID (int UserElement6_ID)
+	{
+		if (UserElement6_ID < 1) 
+			set_Value (COLUMNNAME_UserElement6_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement6_ID, Integer.valueOf(UserElement6_ID));
+	}
+	
+	/** Get User Column 6.
+		@return User defined accounting Element
+	  */
+	public int getUserElement6_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement6_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 7.
+		@param UserElement7_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement7_ID (int UserElement7_ID)
+	{
+		if (UserElement7_ID < 1) 
+			set_Value (COLUMNNAME_UserElement7_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement7_ID, Integer.valueOf(UserElement7_ID));
+	}
+	
+	/** Get User Column 7.
+		@return User defined accounting Element
+	  */
+	public int getUserElement7_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement7_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 8.
+		@param UserElement8_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement8_ID (int UserElement8_ID)
+	{
+		if (UserElement8_ID < 1) 
+			set_Value (COLUMNNAME_UserElement8_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement8_ID, Integer.valueOf(UserElement8_ID));
+	}
+	
+	/** Get User Column 8.
+		@return User defined accounting Element
+	  */
+	public int getUserElement8_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement8_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set User Column 9.
+		@param UserElement9_ID 
+		User defined accounting Element
+	  */
+	public void setUserElement9_ID (int UserElement9_ID)
+	{
+		if (UserElement9_ID < 1) 
+			set_Value (COLUMNNAME_UserElement9_ID, null);
+		else 
+			set_Value (COLUMNNAME_UserElement9_ID, Integer.valueOf(UserElement9_ID));
+	}
+	
+	/** Get User Column 9.
+		@return User defined accounting Element
+	  */
+	public int getUserElement9_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_UserElement9_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

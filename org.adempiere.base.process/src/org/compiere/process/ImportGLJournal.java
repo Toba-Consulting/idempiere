@@ -777,7 +777,10 @@ public class ImportGLJournal extends SvrProcess
 						imp.getM_Product_ID(), imp.getC_BPartner_ID(), imp.getAD_OrgTrx_ID(),
 						imp.getC_LocFrom_ID(), imp.getC_LocTo_ID(), imp.getC_SalesRegion_ID(),
 						imp.getC_Project_ID(), imp.getC_Campaign_ID(), imp.getC_Activity_ID(),
-						imp.getUser1_ID(), imp.getUser2_ID(), 0, 0,
+						imp.getUser1_ID(), imp.getUser2_ID(), imp.getUser3_ID(), imp.getUser4_ID(), imp.getUser5_ID(), 
+						imp.getUser6_ID(), imp.getUser7_ID(), imp.getUser8_ID(), imp.getUser9_ID(), imp.getUser10_ID(), 
+						0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0,
 						get_TrxName());
 					if (acct != null && acct.get_ID() == 0)
 						acct.saveEx();

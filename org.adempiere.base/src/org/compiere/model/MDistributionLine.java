@@ -193,9 +193,20 @@ public class MDistributionLine extends X_GL_DistributionLine
 			isOverwriteActivity() ? getC_Activity_ID() : m_account.getC_Activity_ID(),
 			isOverwriteUser1() ? getUser1_ID() : m_account.getUser1_ID(), 
 			isOverwriteUser2() ? getUser2_ID() : m_account.getUser2_ID(),
-				m_account.getUserElement1_ID(),
-				m_account.getUserElement2_ID(),
-				get_TrxName());
+			isOverwriteUser3() ? getUser3_ID() : m_account.getUser3_ID(),
+			isOverwriteUser4() ? getUser4_ID() : m_account.getUser4_ID(),
+			isOverwriteUser5() ? getUser5_ID() : m_account.getUser5_ID(),
+			isOverwriteUser6() ? getUser6_ID() : m_account.getUser6_ID(),
+			isOverwriteUser7() ? getUser7_ID() : m_account.getUser7_ID(),
+			isOverwriteUser8() ? getUser8_ID() : m_account.getUser8_ID(),
+			isOverwriteUser9() ? getUser9_ID() : m_account.getUser9_ID(),
+			isOverwriteUser10() ? getUser10_ID() : m_account.getUser10_ID(),					
+			m_account.getUserElement1_ID(), m_account.getUserElement2_ID(),
+			m_account.getUserElement3_ID(), m_account.getUserElement4_ID(),
+			m_account.getUserElement5_ID(), m_account.getUserElement6_ID(),
+			m_account.getUserElement7_ID(), m_account.getUserElement8_ID(),
+			m_account.getUserElement9_ID(), m_account.getUserElement10_ID(),
+			get_TrxName());
 		return acct;
 	}	//	setAccount
 	

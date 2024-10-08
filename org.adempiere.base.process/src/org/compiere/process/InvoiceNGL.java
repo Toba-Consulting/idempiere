@@ -367,7 +367,10 @@ public class InvoiceNGL extends SvrProcess
 				base.getM_Product_ID(), base.getC_BPartner_ID(), base.getAD_OrgTrx_ID(), 
 				base.getC_LocFrom_ID(), base.getC_LocTo_ID(), base.getC_SalesRegion_ID(), 
 				base.getC_Project_ID(), base.getC_Campaign_ID(), base.getC_Activity_ID(),
-				base.getUser1_ID(), base.getUser2_ID(), base.getUserElement1_ID(), base.getUserElement2_ID(),
+				base.getUser1_ID(), base.getUser2_ID(), base.getUser3_ID(), base.getUser4_ID(), base.getUser5_ID(), 
+				base.getUser6_ID(), base.getUser7_ID(), base.getUser8_ID(), base.getUser9_ID(), base.getUser10_ID(), 
+				base.getUserElement1_ID(), base.getUserElement2_ID(), base.getUserElement3_ID(), base.getUserElement4_ID(), base.getUserElement5_ID(), 
+				base.getUserElement6_ID(), base.getUserElement7_ID(), base.getUserElement8_ID(), base.getUserElement9_ID(), base.getUserElement10_ID(),
 				get_TrxName());
 			line.setDescription(Msg.getElement(getCtx(), "UnrealizedGain_Acct"));
 			line.setC_ValidCombination_ID(acct.getC_ValidCombination_ID());
@@ -386,7 +389,10 @@ public class InvoiceNGL extends SvrProcess
 				base.getM_Product_ID(), base.getC_BPartner_ID(), base.getAD_OrgTrx_ID(), 
 				base.getC_LocFrom_ID(), base.getC_LocTo_ID(), base.getC_SalesRegion_ID(), 
 				base.getC_Project_ID(), base.getC_Campaign_ID(), base.getC_Activity_ID(),
-				base.getUser1_ID(), base.getUser2_ID(), base.getUserElement1_ID(), base.getUserElement2_ID(),
+				base.getUser1_ID(), base.getUser2_ID(), base.getUser3_ID(), base.getUser4_ID(), base.getUser5_ID(), 
+				base.getUser6_ID(), base.getUser7_ID(), base.getUser8_ID(), base.getUser9_ID(), base.getUser10_ID(), 
+				base.getUserElement1_ID(), base.getUserElement2_ID(), base.getUserElement3_ID(), base.getUserElement4_ID(), base.getUserElement5_ID(), 
+				base.getUserElement6_ID(), base.getUserElement7_ID(), base.getUserElement8_ID(), base.getUserElement9_ID(), base.getUserElement10_ID(),
 				get_TrxName());
 			line.setDescription(Msg.getElement(getCtx(), "UnrealizedLoss_Acct"));
 			line.setC_ValidCombination_ID(acct.getC_ValidCombination_ID());

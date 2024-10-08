@@ -463,7 +463,11 @@ public class MJournalLine extends X_GL_JournalLine
 			MAccount acct = MAccount.get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
 					getC_SubAcct_ID(), getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), getC_LocFrom_ID(),
 					getC_LocTo_ID(), getC_SalesRegion_ID(), getC_Project_ID(), getC_Campaign_ID(), 
-					getC_Activity_ID(), getUser1_ID(), getUser2_ID(), 0, 0,
+					getC_Activity_ID(), getUser1_ID(), getUser2_ID(),
+					getUser3_ID(), getUser4_ID(), getUser1_ID(), getUser5_ID(),
+					getUser6_ID(), getUser7_ID(), getUser8_ID(), getUser10_ID(),
+					0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
 					get_TrxName());
 
 			if (acct != null)

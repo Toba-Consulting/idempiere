@@ -2267,6 +2267,135 @@ public abstract class Doc
 		return 0;
 	}	//	getUser2_ID
 
+	/**
+	 *  Get User 3
+					 
+	 *  @return user defined 3
+	 */
+	public int getUser3_ID()
+	{
+		int index = p_po.get_ColumnIndex("User3_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser3_ID
+	
+	/**
+	 *  Get User 4
+	 *  @return user defined 4
+	 */
+	public int getUser4_ID()
+	{
+		int index = p_po.get_ColumnIndex("User4_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser4_ID
+	
+	/**
+	 *  Get User 5
+	 *  @return user defined 5
+	 */
+	public int getUser5_ID()
+	{
+		int index = p_po.get_ColumnIndex("User1_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser5_ID
+	
+	/**
+	 *  Get User 6
+	 *  @return user defined 6
+	 */
+	public int getUser6_ID()
+	{
+		int index = p_po.get_ColumnIndex("User6_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser6_ID
+	
+	/**
+	 *  Get User 7
+	 *  @return user defined 7
+	 */
+	public int getUser7_ID()
+	{
+		int index = p_po.get_ColumnIndex("User7_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser7_ID
+	
+	/**
+	 *  Get User 8
+	 *  @return user defined 8
+	 */
+	public int getUser8_ID()
+	{
+		int index = p_po.get_ColumnIndex("User8_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser8_ID
+	
+	/**
+	 *  Get User 9
+	 *  @return user defined 9
+	 */
+	public int getUser9_ID()
+	{
+		int index = p_po.get_ColumnIndex("User9_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser9_ID
+	
+	/**
+	 *  Get User 10
+	 *  @return user defined 10
+	 */
+	public int getUser10_ID()
+	{
+		int index = p_po.get_ColumnIndex("User10_ID");
+		if (index != -1)
+		{
+			Integer ii = (Integer)p_po.get_Value(index);
+			if (ii != null)
+				return ii.intValue();
+		}
+		return 0;
+	}   //  getUser10_ID
+	
     /**
 	 * Get value by column name
 	 * @param ColumnName

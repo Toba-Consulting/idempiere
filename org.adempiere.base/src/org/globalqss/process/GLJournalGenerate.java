@@ -468,6 +468,25 @@ public class GLJournalGenerate extends SvrProcess
 		        	int User2_ID = 0;
 					int UserElement1_ID = 0;
 		        	int UserElement2_ID = 0;
+		        	
+		        	//	@Stephan TAOWI-1316
+		        	int User3_ID = 0;
+		        	int User4_ID = 0;
+		        	int User5_ID = 0;
+		        	int User6_ID = 0;
+		        	int User7_ID = 0;
+		        	int User8_ID = 0;
+		        	int User9_ID = 0;
+		        	int User10_ID = 0;
+		        	int UserElement3_ID = 0;
+		        	int UserElement4_ID = 0;
+		        	int UserElement5_ID = 0;
+		        	int UserElement6_ID = 0;
+		        	int UserElement7_ID = 0;
+		        	int UserElement8_ID = 0;
+		        	int UserElement9_ID = 0;
+		        	int UserElement10_ID = 0;
+		        	//	@Stephan end
 					if (columnsOut != null) {
 						int idxcol = 0;
 						for (String col : columnsOut) {
@@ -498,7 +517,40 @@ public class GLJournalGenerate extends SvrProcess
 								UserElement1_ID = id;
 							else if ("UserElement2_ID".equals(col))
 								UserElement2_ID = id;
-							
+							//	@Stephan TAOWI-1316
+							else if ("User3_ID".equals(col))
+								User1_ID = id;
+							else if ("User4_ID".equals(col))
+								User1_ID = id;
+							else if ("User5_ID".equals(col))
+								User1_ID = id;
+							else if ("User6_ID".equals(col))
+								User1_ID = id;
+							else if ("User7_ID".equals(col))
+								User1_ID = id;
+							else if ("User8_ID".equals(col))
+								User1_ID = id;
+							else if ("User9_ID".equals(col))
+								User1_ID = id;
+							else if ("User10_ID".equals(col))
+								User1_ID = id;
+							else if ("UserElement3_ID".equals(col))
+								UserElement3_ID = id;
+							else if ("UserElement4_ID".equals(col))
+								UserElement4_ID = id;
+							else if ("UserElement5_ID".equals(col))
+								UserElement5_ID = id;
+							else if ("UserElement6_ID".equals(col))
+								UserElement6_ID = id;
+							else if ("UserElement7_ID".equals(col))
+								UserElement7_ID = id;
+							else if ("UserElement8_ID".equals(col))
+								UserElement8_ID = id;
+							else if ("UserElement9_ID".equals(col))
+								UserElement9_ID = id;
+							else if ("UserElement10_ID".equals(col))
+								UserElement10_ID = id;
+							//	@Stephan end
 							idxcol++;
 						}
 					}
@@ -507,8 +559,11 @@ public class GLJournalGenerate extends SvrProcess
 							C_SubAcct_ID, M_Product_ID, C_BPartner_ID,
 							AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID,
 							C_SalesRegion_ID, C_Project_ID, C_Campaign_ID,
-							C_Activity_ID, User1_ID, User2_ID, UserElement1_ID,
-							UserElement2_ID,
+							C_Activity_ID, 
+							User1_ID, User2_ID, User3_ID, User4_ID, User5_ID, 
+							User6_ID, User7_ID, User8_ID, User9_ID, User10_ID, 
+							UserElement1_ID, UserElement2_ID, UserElement3_ID, UserElement4_ID, UserElement5_ID, 
+							UserElement6_ID, UserElement7_ID, UserElement8_ID, UserElement9_ID, UserElement10_ID, 
 							get_TrxName());
 					if (combination == null)
 						throw new AdempiereException("Could not create combination");

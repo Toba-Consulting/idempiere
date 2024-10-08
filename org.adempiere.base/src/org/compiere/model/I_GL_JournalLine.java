@@ -602,4 +602,124 @@ public interface I_GL_JournalLine
 	public int getUser2_ID();
 
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
+	
+    /** Column name User3_ID */
+    public static final String COLUMNNAME_User3_ID = "User3_ID";
+
+	/** Set User Element List 3.
+	  * User defined list element #3
+	  */
+	public void setUser3_ID (int User3_ID);
+
+	/** Get User Element List 3.
+	  * User defined list element #3
+	  */
+	public int getUser3_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser3() throws RuntimeException;
+
+    /** Column name User4_ID */
+    public static final String COLUMNNAME_User4_ID = "User4_ID";
+
+	/** Set User Element List 4.
+	  * User defined list element #4
+	  */
+	public void setUser4_ID (int User4_ID);
+
+	/** Get User Element List 4.
+	  * User defined list element #4
+	  */
+	public int getUser4_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser4() throws RuntimeException;
+
+    /** Column name User5_ID */
+    public static final String COLUMNNAME_User5_ID = "User5_ID";
+
+	/** Set User Element List 5.
+	  * User defined list element #5
+	  */
+	public void setUser5_ID (int User5_ID);
+
+	/** Get User Element List 5.
+	  * User defined list element #5
+	  */
+	public int getUser5_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser5() throws RuntimeException;
+
+    /** Column name User6_ID */
+    public static final String COLUMNNAME_User6_ID = "User6_ID";
+
+	/** Set User Element List 6.
+	  * User defined list element #6
+	  */
+	public void setUser6_ID (int User6_ID);
+
+	/** Get User Element List 6.
+	  * User defined list element #6
+	  */
+	public int getUser6_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser6() throws RuntimeException;
+
+    /** Column name User7_ID */
+    public static final String COLUMNNAME_User7_ID = "User7_ID";
+
+	/** Set User Element List 7.
+	  * User defined list element #7
+	  */
+	public void setUser7_ID (int User7_ID);
+
+	/** Get User Element List 7.
+	  * User defined list element #7
+	  */
+	public int getUser7_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser7() throws RuntimeException;
+
+    /** Column name User8_ID */
+    public static final String COLUMNNAME_User8_ID = "User8_ID";
+
+	/** Set User Element List 8.
+	  * User defined list element #8
+	  */
+	public void setUser8_ID (int User8_ID);
+
+	/** Get User Element List 8.
+	  * User defined list element #8
+	  */
+	public int getUser8_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser8() throws RuntimeException;
+
+    /** Column name User9_ID */
+    public static final String COLUMNNAME_User9_ID = "User9_ID";
+
+	/** Set User Element List 9.
+	  * User defined list element #9
+	  */
+	public void setUser9_ID (int User9_ID);
+
+	/** Get User Element List 9.
+	  * User defined list element #9
+	  */
+	public int getUser9_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser9() throws RuntimeException;
+	
+    /** Column name User10_ID */
+    public static final String COLUMNNAME_User10_ID = "User10_ID";
+
+	/** Set User Element List 10.
+	  * User defined list element #10
+	  */
+	public void setUser10_ID (int User10_ID);
+
+	/** Get User Element List 10.
+	  * User defined list element #10
+	  */
+	public int getUser10_ID();
+
+	public org.compiere.model.I_C_ElementValue getUser10() throws RuntimeException;
 }

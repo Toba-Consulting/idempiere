@@ -140,6 +140,30 @@ public class WAcctViewerData
 	/** UserElement2 Reference	*/
 	private String m_ref2 = null;
 	
+	/** UserElement3 Reference	*/
+	private String m_ref3 = null;
+	
+	/** UserElement4 Reference	*/
+	private String m_ref4 = null;
+	
+	/** UserElement5 Reference	*/
+	private String m_ref5 = null;
+	
+	/** UserElement6 Reference	*/
+	private String m_ref6 = null;
+	
+	/** UserElement7 Reference	*/
+	private String m_ref7 = null;
+	
+	/** UserElement8 Reference	*/
+	private String m_ref8 = null;
+	
+	/** UserElement9 Reference	*/
+	private String m_ref9 = null;
+	
+	/** UserElement10 Reference	*/
+	private String m_ref10 = null;
+	
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(WAcctViewerData.class);
 
@@ -544,8 +568,24 @@ public class WAcctViewerData
 			{
 				if (column.indexOf('1') != -1)
 					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref1));
-				else
+				else if (column.indexOf('2') != -1)
 					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref2));
+				else if (column.indexOf('3') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref3));
+				else if (column.indexOf('4') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref4));
+				else if (column.indexOf('5') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref5));
+				else if (column.indexOf('6') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref6));
+				else if (column.indexOf('7') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref7));
+				else if (column.indexOf('8') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref8));
+				else if (column.indexOf('9') != -1)
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref9));
+				else
+					rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir, null, 0, m_ref10));
 			}
 			else if (column != null && column.endsWith("_ID"))
 				rm.addColumn(new RColumn(ctx, column, DisplayType.TableDir));
@@ -617,8 +657,24 @@ public class WAcctViewerData
 			{
 				if (columnName.indexOf('1') != -1)
 					m_ref1 = ase.getDisplayColumnName();
-				else
+				else if (columnName.indexOf('2') != -1)
 					m_ref2 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('3') != -1)
+					m_ref3 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('4') != -1)
+					m_ref4 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('5') != -1)
+					m_ref5 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('6') != -1)
+					m_ref6 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('7') != -1)
+					m_ref7 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('8') != -1)
+					m_ref8 = ase.getDisplayColumnName();
+				else if (columnName.indexOf('9') != -1)
+					m_ref9 = ase.getDisplayColumnName();
+				else
+					m_ref10 = ase.getDisplayColumnName();
 			}
 			
 			if (!columns.contains(columnName))
