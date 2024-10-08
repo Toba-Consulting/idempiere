@@ -396,6 +396,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bCancel.addEventListener(Events.ON_CLICK, this);
 		bOk.addEventListener(Events.ON_CLICK, this);
 
+		/*
 		if (ThemeManager.isUseFontIconForImage())
 			bDeleteAll.setIconSclass("z-icon-Delete");
 		else
@@ -403,6 +404,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bDeleteAll.setSclass("img-btn");
 		bDeleteAll.addEventListener(Events.ON_CLICK, this);
 		bDeleteAll.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "DeleteAll")));
+		*/
 
 		if (ThemeManager.isUseFontIconForImage())
 			bPreview.setIconSclass("z-icon-Find");
@@ -412,7 +414,7 @@ public class WAttachment extends Window implements EventListener<Event>
 		bPreview.addEventListener(Events.ON_CLICK, this);
 		bPreview.setTooltiptext(Msg.getMsg(Env.getCtx(), "Preview"));
 
-		confirmPanel.appendChild(bDeleteAll);
+		//confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bPreview);
 		ZKUpdateUtil.setHflex(confirmPanel, "1");
 		Hbox hbox = new Hbox();
@@ -718,10 +720,10 @@ public class WAttachment extends Window implements EventListener<Event>
 		} else if (e.getTarget() == bCancel) {
 			bCancelClicked = true;
 			onCancel();
-		} else if (e.getTarget() == bDeleteAll) {
+		} /*else if (e.getTarget() == bDeleteAll) {
 			//	Delete Attachment
 			deleteAttachment();
-		} else if (e.getTarget() == bDelete) {
+		}*/ else if (e.getTarget() == bDelete) {
 			//	Delete individual entry and Return
 			deleteAttachmentEntry();
 		} else if (e.getTarget() == cbContent) {
