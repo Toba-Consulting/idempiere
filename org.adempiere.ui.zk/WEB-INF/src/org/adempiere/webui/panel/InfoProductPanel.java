@@ -775,7 +775,7 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		if (M_Warehouse_ID != 0)
 		{
 			where.append(" AND p.IsSummary='N'");
-			orderBy = "QtyAvailable DESC";
+			//orderBy = "QtyAvailable DESC";
 		}
 		//  dynamic Where Clause
 		if (p_whereClause != null && p_whereClause.length() > 0)
