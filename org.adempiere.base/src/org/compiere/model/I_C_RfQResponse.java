@@ -418,4 +418,17 @@ public interface I_C_RfQResponse
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+	
+    /** Column name IsInternal */
+    public static final String COLUMNNAME_IsInternal = "IsInternal";
+
+	/** Set Internal.
+	  * Internal Organization
+	  */
+	public void setIsInternal (boolean IsInternal);
+
+	/** Get Internal.
+	  * Internal Organization
+	  */
+	public boolean isInternal();
 }

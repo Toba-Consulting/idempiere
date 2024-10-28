@@ -17,9 +17,12 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
+
+import org.compiere.util.Env;
 
 /** Generated Model for C_RfQResponseLine
  *  @author iDempiere (generated)
@@ -338,4 +341,288 @@ public class X_C_RfQResponseLine extends PO implements I_C_RfQResponseLine, I_Pe
 		}
 		return false;
 	}
+	
+	/** Set Base Price.
+	@param BasePrice Base Price	  */
+	public void setBasePrice (BigDecimal BasePrice)
+	{
+		set_Value (COLUMNNAME_BasePrice, BasePrice);
+	}
+	
+	/** Get Base Price.
+		@return Base Price	  */
+	public BigDecimal getBasePrice () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_BasePrice);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+	
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_Name)
+			.getPO(getC_Charge_ID(), get_TrxName());	}
+	
+	/** Set Charge.
+		@param C_Charge_ID 
+		Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID)
+	{
+		if (C_Charge_ID < 1) 
+			set_Value (COLUMNNAME_C_Charge_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
+	}
+	
+	/** Get Charge.
+		@return Additional document charges
+	  */
+	public int getC_Charge_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_Name)
+			.getPO(getC_UOM_ID(), get_TrxName());	}
+
+	/** Set UOM.
+		@param C_UOM_ID 
+		Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID)
+	{
+		if (C_UOM_ID < 1) 
+			set_Value (COLUMNNAME_C_UOM_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
+	}
+
+	/** Get UOM.
+		@return Unit of Measure
+	  */
+	public int getC_UOM_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+	
+	/** Set Faktor Kondisi.
+	@param FaktorKondisi Faktor Kondisi	  */
+	public void setFaktorKondisi (BigDecimal FaktorKondisi)
+	{
+		set_Value (COLUMNNAME_FaktorKondisi, FaktorKondisi);
+	}
+	
+	/** Get Faktor Kondisi.
+		@return Faktor Kondisi	  */
+	public BigDecimal getFaktorKondisi () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_FaktorKondisi);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+	
+	/** Set Description Only.
+	@param IsDescription 
+	if true, the line is just description and no transaction
+	 */
+	public void setIsDescription (boolean IsDescription)
+	{
+		set_ValueNoCheck (COLUMNNAME_IsDescription, Boolean.valueOf(IsDescription));
+	}
+	
+	/** Get Description Only.
+		@return if true, the line is just description and no transaction
+	  */
+	public boolean isDescription () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsDescription);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
+	/** Set Line.
+	@param LineNo 
+	Line No
+	  */
+	public void setLineNo (int LineNo)
+	{
+		set_Value (COLUMNNAME_LineNo, Integer.valueOf(LineNo));
+	}
+	
+	/** Get Line.
+		@return Line No
+	  */
+	public int getLineNo () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_LineNo);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}	
+	
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
+			.getPO(getM_Product_ID(), get_TrxName());	}
+
+	/** Set Product.
+		@param M_Product_ID 
+		Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID)
+	{
+		if (M_Product_ID < 1) 
+			set_Value (COLUMNNAME_M_Product_ID, null);
+		else 
+			set_Value (COLUMNNAME_M_Product_ID, Integer.valueOf(M_Product_ID));
+	}
+
+	/** Get Product.
+		@return Product, Service, Item
+	  */
+	public int getM_Product_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_M_Product_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Price.
+		@param Price 
+		Price
+	  */
+	public void setPrice (BigDecimal Price)
+	{
+		set_Value (COLUMNNAME_Price, Price);
+	}
+
+	/** Get Price.
+		@return Price
+	  */
+	public BigDecimal getPrice () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Price);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Unit Price.
+		@param PriceActual 
+		Actual Price 
+	  */
+	public void setPriceActual (BigDecimal PriceActual)
+	{
+		set_Value (COLUMNNAME_PriceActual, PriceActual);
+	}
+
+	/** Get Unit Price.
+		@return Actual Price 
+	  */
+	public BigDecimal getPriceActual () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceActual);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Price (Faktor Kondisi).
+		@param PriceKondisi Price (Faktor Kondisi)	  */
+	public void setPriceKondisi (BigDecimal PriceKondisi)
+	{
+		set_Value (COLUMNNAME_PriceKondisi, PriceKondisi);
+	}
+
+	/** Get Price (Faktor Kondisi).
+		@return Price (Faktor Kondisi)	  */
+	public BigDecimal getPriceKondisi () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceKondisi);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Standard Price.
+		@param PriceStd 
+		Standard Price
+	  */
+	public void setPriceStd (BigDecimal PriceStd)
+	{
+		set_Value (COLUMNNAME_PriceStd, PriceStd);
+	}
+
+	/** Get Standard Price.
+		@return Standard Price
+	  */
+	public BigDecimal getPriceStd () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_PriceStd);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Processed.
+		@param Processed 
+		The document has been processed
+	  */
+	public void setProcessed (boolean Processed)
+	{
+		set_Value (COLUMNNAME_Processed, Boolean.valueOf(Processed));
+	}
+
+	/** Get Processed.
+		@return The document has been processed
+	  */
+	public boolean isProcessed () 
+	{
+		Object oo = get_Value(COLUMNNAME_Processed);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+	
+	/** Set Quantity.
+	@param Qty 
+	Quantity
+	  */
+	public void setQty (BigDecimal Qty)
+	{
+		set_Value (COLUMNNAME_Qty, Qty);
+	}
+	
+	/** Get Quantity.
+		@return Quantity
+	  */
+	public BigDecimal getQty () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Qty);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
 }

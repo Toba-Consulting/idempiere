@@ -162,9 +162,110 @@ public class MRfQResponse extends X_C_RfQResponse
 
 			@SuppressWarnings("unused")
 			MRfQResponseLine line = new MRfQResponseLine (this, lines[i]);
-			//	line is not saved (dumped) if there are no Qtys 
+			//	line is not saved (dumped) if there are no Qtys
 		}
 	}	//	MRfQResponse
+	
+	public MRfQResponse(MRfQ rfq, MRfQTopicSubscriber subscriber , int p_C_Tax_ID) {
+		this(rfq, subscriber, subscriber.getC_BPartner_ID(), subscriber.getC_BPartner_Location_ID(),
+				subscriber.getAD_User_ID(), p_C_Tax_ID);
+	} // MRfQResponse
+	
+	public MRfQResponse(MRfQ rfq, MRfQTopicSubscriber subscriber, int C_BPartner_ID, int C_BPartner_Location_ID,
+			int AD_User_ID, int p_C_Tax_ID) {
+		this(rfq.getCtx(), 0, rfq.get_TrxName());
+		setClientOrg(rfq);
+		setC_RfQ_ID(rfq.getC_RfQ_ID());
+		setC_Currency_ID(rfq.getC_Currency_ID());
+		setName(rfq.getName());
+		setDateInvited(new Timestamp(System.currentTimeMillis()));
+		setDateResponse(rfq.getDateResponse());
+		setDateWorkStart(rfq.getDateWorkStart());
+		setDateWorkComplete(rfq.getDateWorkComplete());
+		setDeliveryDays(rfq.getDeliveryDays());
+		setIsInternal(subscriber.isInternal());
+
+		if (MSysConfig.getValue("TAOWI_USE_ORGTRX").equals("Y")) {
+			// set orgTrx and Project
+			if (rfq.get_ValueAsInt("AD_OrgTrx_ID") > 0) {
+				set_ValueOfColumn("AD_OrgTrx_ID", rfq.get_ValueAsInt("AD_OrgTrx_ID"));
+			}
+		}
+
+		m_rfq = rfq;
+		// Subscriber info
+		setC_BPartner_ID(C_BPartner_ID);
+		setC_BPartner_Location_ID(C_BPartner_Location_ID);
+		setAD_User_ID(AD_User_ID);
+
+		// Create Lines
+		MRfQLine[] lines = rfq.getLines();
+
+		// @Stephan Generate Line Number
+		int LineNo = 0;
+		//
+
+		for (MRfQLine line : lines) {
+			if (!line.isActive())
+				continue;
+
+			// Product on "Only" list
+			if (subscriber != null && !subscriber.isIncluded(line.getM_Product_ID()))
+				continue;
+			//
+			if (get_ID() == 0) // save Response
+				saveEx();
+
+			MRfQResponseLine respLine = new MRfQResponseLine(this, line);
+			respLine.setM_Product_ID(line.getM_Product_ID());
+			respLine.setIsDescription(line.isDescription());
+			respLine.setC_Charge_ID(line.getC_Charge_ID());
+			respLine.setDescription(line.getDescription());
+			respLine.setQty(line.getQty());
+			respLine.setPriceActual(Env.ZERO);
+			respLine.setPriceStd(Env.ZERO);
+			// respLine.setFaktorKondisi(Env.ZERO);
+			
+			/*
+			 * 	unused - comment out by figo
+			 *
+			if (line.getM_Product_Category_ID() > 0) {
+				respLine.setM_Product_Category_ID(line.getM_Product_Category_ID());
+				MProductCategory productCategory = MProductCategory.get(getCtx(), line.getM_Product_Category_ID());
+				if (productCategory.get_Value("FaktorKondisi") != null) {
+					BigDecimal faktorKondisi = (BigDecimal) productCategory.get_Value("FaktorKondisi");
+					respLine.setFaktorKondisi(faktorKondisi);
+				} else {
+					respLine.setFaktorKondisi(Env.ZERO);
+				}
+			}
+			if (line.getProduct() != null) {
+				respLine.setProduct(line.getProduct());
+			}
+			if (line.getSize() != null) {
+				respLine.setSize(line.getSize());
+			}
+			*
+			*	end unused
+			*/
+			
+			respLine.setC_UOM_ID(line.getC_UOM_ID());
+			respLine.setDescription(line.getDescription());
+			respLine.setHelp(line.getHelp());
+			respLine.setDateWorkStart(line.getDateWorkStart());
+			respLine.setDateWorkComplete(line.getDateWorkComplete());
+			respLine.setDeliveryDays(line.getDeliveryDays());
+			respLine.set_ValueOfColumn("C_Tax_ID", p_C_Tax_ID);
+			// @Stephan
+			respLine.setLineNo(LineNo += 10);
+			if (line.get_ValueAsInt("AD_OrgTrx_ID") > 0) {
+				respLine.set_ValueOfColumn("AD_OrgTrx_ID", line.get_ValueAsInt("AD_OrgTrx_ID"));
+			}
+			// end here
+			respLine.saveEx();
+			// line is not saved (dumped) if there are no Qtys
+		}
+	} // MRfQResponse
 
 	/**	underlying RfQ				*/
 	private MRfQ				m_rfq = null;
@@ -296,10 +397,18 @@ public class MRfQResponse extends X_C_RfQResponse
 	 */
 	public File createPDF (File file)
 	{
-		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.RFQ, getC_RfQResponse_ID(),get_TrxName());
-		if (re == null)
-			return null;
-		MPrintFormat format = re.getPrintFormat();
+		MPrintFormat format = null;
+		ReportEngine re = null;
+		
+		if (getC_RfQ().getC_RfQ_Topic().getAD_PrintFormat() != null) {
+			format = (MPrintFormat) getC_RfQ().getC_RfQ_Topic().getAD_PrintFormat();
+		} else {
+			re = ReportEngine.get (getCtx(), ReportEngine.RFQ, getC_RfQResponse_ID());
+			if (re == null)
+				return null;
+			
+			format = re.getPrintFormat();
+		}
 		// We have a Jasper Print Format
 		// ==============================
 		if(format.getJasperProcess_ID() > 0)	
@@ -428,5 +537,97 @@ public class MRfQResponse extends X_C_RfQResponse
 		
 		return true;
 	}	//	beforeSave
+	
+	/**************************************************************************
+	 * 	Send RfQ
+	 *	@return true if RfQ is sent per email.
+	 */
+	public boolean sendRfQ(MMailText mailText)
+	{
+		MUser to = MUser.get(getCtx(), getAD_User_ID());
+		if (to.get_ID() == 0 || to.getEMail() == null || to.getEMail().length() == 0)
+		{
+			log.log(Level.SEVERE, "No User or no EMail - " + to);
+			return false;
+		}
+		MClient client = MClient.get(getCtx());
+		mailText.setBPartner(getC_BPartner_ID());
+		
+		StringBuilder message = new StringBuilder(mailText.getMailText(true));
+		EMail email = client.createEMail(to.getEMail(), mailText.getMailHeader(), message.toString());
+		if (mailText.isHtml())
+			email.setMessageHTML(mailText.getMailHeader(), message.toString());
+		else
+		{
+			email.setSubject (mailText.getMailHeader());
+			email.setMessageText (message.toString());
+		}
+		if (!email.isValid() && !email.isValid(true))
+		{
+			log.warning("NOT VALID - " + email);
+			to.setIsActive(false);
+			to.addDescription("Invalid EMail");
+			to.saveEx();
+			return Boolean.FALSE;
+		}
+		email.addAttachment(createPDF());
+		if (EMail.SENT_OK.equals(email.send()))
+		{
+			setDateInvited(new Timestamp (System.currentTimeMillis()));
+			saveEx();
+			return true;
+		}
+		return false;
+	}	//	sendRfQ
+	
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (!success)
+			return success;
+		
+		// F - 298 Set C_ Tax_ID di RfQ ResponseLine
+		String sqlrfqResponselineid = "select distinct crl.c_rfqresponseline_id from c_rfqresponseline crl "
+				+ "join c_rfqresponse crr on crl.c_rfqresponse_id = crr.c_rfqresponse_id "
+				+ "where crl.c_rfqresponse_id = " + get_ID();
+		int[] ids = DB.getIDsEx(null, sqlrfqResponselineid);
+
+		if (ids != null) {
+			for (int id : ids) {
+				// Set Tax
+				MRfQResponseLine responseline = new MRfQResponseLine(getCtx(), id, get_TrxName());
+				String Sqltax = "select crr.c_tax_id from c_rfqresponse crr " + "where c_rfqresponse_id = " + get_ID();
+				int TaxID = DB.getSQLValue(get_TrxName(), Sqltax);
+
+				responseline.set_ValueOfColumn("C_Tax_ID", TaxID);
+
+				BigDecimal Linenetamt = (BigDecimal) responseline.get_Value("LineNetAmt");
+				Linenetamt = Env.ZERO;
+				BigDecimal qty = (BigDecimal) responseline.get_Value("Qty");
+
+				BigDecimal price = (BigDecimal) responseline.get_Value("Price");
+				Linenetamt = price.multiply(qty);
+				responseline.set_ValueOfColumn("LineNetAmt", Linenetamt);
+
+				int dividetax = 100;
+				BigDecimal Taxamt = Env.ZERO;
+//				int Tax = (int) get_Value("C_Tax_ID");
+				int Tax = get_ValueAsInt("C_Tax_ID");
+				MTax tax = new MTax(Env.getCtx(), Tax, null);
+				BigDecimal rate = tax.getRate();
+
+				if (Linenetamt.compareTo(Env.ZERO) > 0 && Tax > 0) {
+					if (rate.compareTo(Env.ZERO) == 0 || rate.compareTo(Env.ZERO) < 0) {
+						Taxamt = Env.ZERO;
+					} else {
+						Taxamt = Linenetamt.multiply(rate).divide(BigDecimal.valueOf(dividetax));
+					}
+					responseline.set_ValueOfColumn("TaxAmt", Taxamt);
+
+				}
+				responseline.saveEx();
+			}
+		}
+		// End F - 298
+		return success;
+	} // after save
 
 }	//	MRfQResponse

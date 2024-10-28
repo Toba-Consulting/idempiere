@@ -273,4 +273,19 @@ public class MRfQLine extends X_C_RfQLine
 		return true;
 	}	//	beforeSave
 
+	@Override
+	protected boolean beforeDelete()
+	{	
+		String sql2 = "DELETE FROM M_MatchRfQResponses WHERE C_RfQLine_ID="+get_ID();
+		DB.executeUpdate(sql2, get_TrxName());
+		
+		String sql3 = "DELETE FROM M_MatchQuotation WHERE C_RfQLine_ID="+get_ID();
+		DB.executeUpdate(sql3, get_TrxName());
+		
+		String sql4 = "DELETE FROM M_MatchRequest WHERE C_RfQLine_ID="+get_ID();
+		DB.executeUpdate(sql4, get_TrxName());
+		
+		return true;
+	}
+	
 }	//	MRfQLine

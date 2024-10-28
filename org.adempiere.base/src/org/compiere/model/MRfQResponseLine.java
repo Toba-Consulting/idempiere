@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 
 /**
@@ -90,6 +92,10 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 		setIsSelectedWinner (false);
 		setIsSelfService (false);
 		//
+		
+		/*
+		 *	comment out by figo - unused
+		 * 
 		MRfQLineQty[] qtys = line.getQtys();
 		for (int i = 0; i < qtys.length; i++)
 		{
@@ -101,6 +107,9 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 				qty.saveEx();
 			}
 		}
+		*
+		*	end comment
+		*/
 	}	//	MRfQResponseLine
 	
 	/**	RfQ Line				*/
@@ -188,6 +197,16 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 	@Override
 	protected boolean beforeSave (boolean newRecord)
 	{
+		/*
+		 * 	added by figo
+		 * 	code from TAOWI-1.0
+		 */
+		if (!isDescription() && getM_Product_ID()<=0 && getC_Charge_ID()<=0)
+			return false;
+		/*
+		 * 	end code TAOWI-1.0
+		 */
+		
 		//	Calculate Complete Date (also used to verify)
 		if (getDateWorkStart() != null && getDeliveryDays() != 0)
 			setDateWorkComplete (TimeUtil.addDays(getDateWorkStart(), getDeliveryDays()));
@@ -227,6 +246,27 @@ public class MRfQResponseLine extends X_C_RfQResponseLine
 				}
 			}
 		}
+		
+		// F - 298 set TotalLines dan GrandTotal di RfQ Response
+		MRfQResponse response = new MRfQResponse(getCtx(), getC_RfQResponse_ID(), get_TrxName());
+
+		BigDecimal totallines = (BigDecimal) get_Value("TotalLines");
+		totallines = Env.ZERO;
+		String SqlTotallines = "select sum(crr.LineNetAmt) from c_rfqresponseline crr "
+				+ "where crr.c_rfqresponse_id = " + getC_RfQResponse_ID();
+		totallines = DB.getSQLValueBD(get_TrxName(), SqlTotallines);
+		response.set_ValueOfColumn("TotalLines", totallines);
+
+		BigDecimal grandtotal = (BigDecimal) get_Value("Grandtotal");
+		grandtotal = Env.ZERO;
+		String SqlTotalTaxAmt = "select sum(crr.TaxAmt) from c_rfqresponseline crr " + "where crr.c_rfqresponse_id = "
+				+ getC_RfQResponse_ID();
+		BigDecimal TotalTaxAmt = DB.getSQLValueBD(get_TrxName(), SqlTotalTaxAmt);
+		grandtotal = totallines.add(TotalTaxAmt);
+		response.set_ValueOfColumn("GrandTotal", grandtotal);
+		response.saveEx();
+		// Endd F - 298		
+		
 		return success;
 	}	//	success
 	

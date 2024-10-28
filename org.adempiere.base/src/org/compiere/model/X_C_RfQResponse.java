@@ -658,4 +658,28 @@ public class X_C_RfQResponse extends PO implements I_C_RfQResponse, I_Persistent
 			 return 0;
 		return ii.intValue();
 	}
+	
+	/** Set Internal.
+	@param IsInternal 
+	Internal Organization
+	  */
+	public void setIsInternal (boolean IsInternal)
+	{
+		set_Value (COLUMNNAME_IsInternal, Boolean.valueOf(IsInternal));
+	}
+	
+	/** Get Internal.
+		@return Internal Organization
+	  */
+	public boolean isInternal () 
+	{
+		Object oo = get_Value(COLUMNNAME_IsInternal);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
 }

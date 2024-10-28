@@ -249,4 +249,169 @@ public interface I_C_RfQResponseLine
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+	
+	/** Column name BasePrice */
+    public static final String COLUMNNAME_BasePrice = "BasePrice";
+
+	/** Set Base Price	  */
+	public void setBasePrice (BigDecimal BasePrice);
+	 
+							   
+
+	/** Get Base Price	  */
+	public BigDecimal getBasePrice();
+
+    /** Column name C_Charge_ID */
+    public static final String COLUMNNAME_C_Charge_ID = "C_Charge_ID";
+
+	/** Set Charge.
+	  * Additional document charges
+	  */
+	public void setC_Charge_ID (int C_Charge_ID);
+
+	/** Get Charge.
+	  * Additional document charges
+	  */
+	public int getC_Charge_ID();
+
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException;
+	
+	/** Column name C_UOM_ID */
+    public static final String COLUMNNAME_C_UOM_ID = "C_UOM_ID";
+
+	/** Set UOM.
+	  * Unit of Measure
+	  */
+	public void setC_UOM_ID (int C_UOM_ID);
+
+	/** Get UOM.
+	  * Unit of Measure
+	  */
+	public int getC_UOM_ID();
+
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException;
+	
+	/** Column name FaktorKondisi */
+    public static final String COLUMNNAME_FaktorKondisi = "FaktorKondisi";
+
+	/** Set Faktor Kondisi	  */
+	public void setFaktorKondisi (BigDecimal FaktorKondisi);
+
+	/** Get Faktor Kondisi	  */
+	public BigDecimal getFaktorKondisi();
+	
+	/** Column name IsDescription */
+    public static final String COLUMNNAME_IsDescription = "IsDescription";
+
+	/** Set Description Only.
+	  * if true, the line is just description and no transaction
+	  */
+	public void setIsDescription (boolean IsDescription);
+
+	/** Get Description Only.
+	  * if true, the line is just description and no transaction
+	  */
+	public boolean isDescription();
+	
+	/** Column name LineNo */
+    public static final String COLUMNNAME_LineNo = "LineNo";
+
+	/** Set Line.
+	  * Line No
+	  */
+	public void setLineNo (int LineNo);
+
+	/** Get Line.
+	  * Line No
+	  */
+	public int getLineNo();
+	
+	/** Column name M_Product_ID */
+    public static final String COLUMNNAME_M_Product_ID = "M_Product_ID";
+
+	/** Set Product.
+	  * Product, Service, Item
+	  */
+	public void setM_Product_ID (int M_Product_ID);
+
+	/** Get Product.
+	  * Product, Service, Item
+	  */
+	public int getM_Product_ID();
+
+	public org.compiere.model.I_M_Product getM_Product() throws RuntimeException;
+
+    /** Column name Price */
+    public static final String COLUMNNAME_Price = "Price";
+
+	/** Set Price.
+	  * Price
+	  */
+	public void setPrice (BigDecimal Price);
+
+	/** Get Price.
+	  * Price
+	  */
+	public BigDecimal getPrice();
+
+    /** Column name PriceActual */
+    public static final String COLUMNNAME_PriceActual = "PriceActual";
+
+	/** Set Unit Price.
+	  * Actual Price 
+	  */
+	public void setPriceActual (BigDecimal PriceActual);
+
+	/** Get Unit Price.
+	  * Actual Price 
+	  */
+	public BigDecimal getPriceActual();
+
+    /** Column name PriceKondisi */
+    public static final String COLUMNNAME_PriceKondisi = "PriceKondisi";
+
+	/** Set Price (Faktor Kondisi)	  */
+	public void setPriceKondisi (BigDecimal PriceKondisi);
+
+	/** Get Price (Faktor Kondisi)	  */
+	public BigDecimal getPriceKondisi();
+
+    /** Column name PriceStd */
+    public static final String COLUMNNAME_PriceStd = "PriceStd";
+
+	/** Set Standard Price.
+	  * Standard Price
+	  */
+	public void setPriceStd (BigDecimal PriceStd);
+
+	/** Get Standard Price.
+	  * Standard Price
+	  */
+	public BigDecimal getPriceStd();
+
+    /** Column name Processed */
+    public static final String COLUMNNAME_Processed = "Processed";
+
+	/** Set Processed.
+	  * The document has been processed
+	  */
+	public void setProcessed (boolean Processed);
+
+	/** Get Processed.
+	  * The document has been processed
+	  */
+	public boolean isProcessed();
+	
+	/** Column name Qty */
+    public static final String COLUMNNAME_Qty = "Qty";
+
+	/** Set Quantity.
+	  * Quantity
+	  */
+	public void setQty (BigDecimal Qty);
+
+	/** Get Quantity.
+	  * Quantity
+	  */
+	public BigDecimal getQty();
 }
