@@ -116,6 +116,22 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 			return I_C_ValidCombination.COLUMNNAME_User1_ID;
 		else if (elementType.equals(ELEMENTTYPE_UserElementList2))
 			return I_C_ValidCombination.COLUMNNAME_User2_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList3))
+			return I_C_ValidCombination.COLUMNNAME_User3_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList4))
+			return I_C_ValidCombination.COLUMNNAME_User4_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList5))
+			return I_C_ValidCombination.COLUMNNAME_User5_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList6))
+			return I_C_ValidCombination.COLUMNNAME_User6_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList7))
+			return I_C_ValidCombination.COLUMNNAME_User7_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList8))
+			return I_C_ValidCombination.COLUMNNAME_User8_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList9))
+			return I_C_ValidCombination.COLUMNNAME_User9_ID;
+		else if (elementType.equals(ELEMENTTYPE_UserElementList10))
+			return I_C_ValidCombination.COLUMNNAME_User10_ID;
 		else if (elementType.equals(ELEMENTTYPE_UserColumn1))
 			return I_C_ValidCombination.COLUMNNAME_UserElement1_ID;
 		else if (elementType.equals(ELEMENTTYPE_UserColumn2))
