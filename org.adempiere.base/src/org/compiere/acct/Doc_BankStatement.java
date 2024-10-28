@@ -209,6 +209,7 @@ public class Doc_BankStatement extends Doc
 					fl.setAD_Org_ID(AD_Org_ID);
 				if (fl != null && C_BPartner_ID != 0)
 					fl.setC_BPartner_ID(C_BPartner_ID);
+				fl.setDateAcct(line.getDateAcct()); //@win - set date acct from statement line (code from taowi-1.0)
 
 				//  BankInTransit   DR      CR              (Payment)
 				fl = fact.createLine(line,
@@ -223,6 +224,7 @@ public class Doc_BankStatement extends Doc
 					else
 						fl.setAD_Org_ID(line.getAD_Org_ID(true)); // from payment
 				}
+				fl.setDateAcct(line.getDateAcct()); //@win - set date acct from statement line (code from taowi-1.0)
 
 			}
 			// End Avoid usage of clearing accounts

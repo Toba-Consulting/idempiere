@@ -47,6 +47,7 @@ import org.compiere.model.MMatchPO;
 import org.compiere.model.MNote;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MRefList;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -1287,6 +1288,23 @@ public abstract class Doc
 	public static final int     ACCTTYPE_CommitmentOffset = 111;
 	/** GL Accounts - Commitment Offset	Sales */
 	public static final int     ACCTTYPE_CommitmentOffsetSales = 112;
+	
+	/*
+	 * 	add code from taowi-1.0
+	 * 	ARAP Acct By Currency
+	 * 	by @David, added by @figo
+	 * 
+	 * 	new parameter for AR AP
+	 */
+	public static final int		ACCTTYPE_C_Receivable_ByCurrency = 121;
+	public static final int		ACCTTYPE_V_Liability_ByCurrency = 122;
+	public static final int		ACCTTYPE_UnEarnedRevenue_ByCurrency = 123;
+	public static final int		ACCTTYPE_NotInvoicedReceipts_ByCurrency = 124;
+	public static final int		ACCTTYPE_V_Prepayment_ByCurrency = 125;
+	public static final int		ACCTTYPE_C_Prepayment_ByCurrency = 126;
+	/*
+	 * 	end code
+	 */
 
 	/**
 	 *	Get valid combination id by account type and accounting schema
@@ -1464,6 +1482,54 @@ public abstract class Doc
 			sql = "SELECT CommitmentOffsetSales_Acct FROM C_AcctSchema_GL WHERE C_AcctSchema_ID=?";
 			para_1 = -1;
 		}
+		
+		/*
+		 * 	add code from taowi-1.0
+		 * 	ARAP Acct By Currency
+		 * 	by @David, added by @figo
+		 * 	
+		 * 	Acct Type
+		 * 	- C_Receivable_ByCurrency use C_Receivable_Acct from C_BP_C_InvAcctByCurrency
+		 * 	- V_Liability_ByCurrency use V_Liability_Acct from C_BP_C_InvAcctByCurrency
+		 * 	- UnEarnedRevenue_ByCurrency use UnEarnedRevenue_Acct from C_BP_C_InvAcctByCurrency
+		 * 	- NotInvoicedReceipts_ByCurrency use NotInvoicedReceipts_Acct from C_BP_C_InvAcctByCurrency
+		 * 	- V_Prepayment_ByCurrency use V_Prepayment_Acct from C_BP_C_InvAcctByCurrency
+		 * 	- C_Prepayment_ByCurrency use C_Prepayment_Acct from C_BP_C_InvAcctByCurrency
+		 */
+		else if (AcctType == ACCTTYPE_C_Receivable_ByCurrency)
+		{
+			sql = "SELECT C_Receivable_Acct FROM C_BP_C_InvAcctByCurrency WHERE C_Currency_ID="+getC_Currency_ID()+" AND C_BPartner_ID="+getC_BPartner_ID()+" AND C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_V_Liability_ByCurrency)
+		{
+			sql = "SELECT V_Liability_Acct FROM C_BP_V_InvAcctByCurrency WHERE C_Currency_ID="+getC_Currency_ID()+" AND C_BPartner_ID="+getC_BPartner_ID()+" AND C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_UnEarnedRevenue_ByCurrency)
+		{
+			sql = "SELECT UnEarnedRevenue_Acct FROM C_BP_C_InvAcctByCurrency WHERE C_Currency_ID="+getC_Currency_ID()+" AND C_BPartner_ID="+getC_BPartner_ID()+" AND C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_NotInvoicedReceipts_ByCurrency)
+		{
+			sql = "SELECT NotInvoicedReceipts_Acct FROM C_BP_V_InvAcctByCurrency WHERE C_Currency_ID="+getC_Currency_ID()+" AND C_BPartner_ID="+getC_BPartner_ID()+" AND C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_V_Prepayment_ByCurrency)
+		{
+			sql = "SELECT V_Prepayment_Acct FROM C_BP_V_InvAcctByCurrency WHERE C_Currency_ID="+getC_Currency_ID()+" AND C_BPartner_ID="+getC_BPartner_ID()+" AND C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		else if (AcctType == ACCTTYPE_C_Prepayment_ByCurrency)
+		{
+			sql = "SELECT C_Prepayment_Acct FROM C_BP_C_InvAcctByCurrency WHERE C_Currency_ID="+getC_Currency_ID()+" AND C_BPartner_ID="+getC_BPartner_ID()+" AND C_AcctSchema_ID=?";
+			para_1 = -1;
+		}
+		
+		/*
+		 * 	end code
+		 */
 
 		else
 		{
@@ -2457,4 +2523,50 @@ public abstract class Doc
 	public boolean isDeferPosting() {
 		return false;
 	}
+	
+	
+	/*
+	 * 	add code from taowi-1.0
+	 * 	ARAP Acct By Currency
+	 * 	by @David, added by @figo
+	 * 
+	 * 	@function
+	 * 	used to validate when currency same with currency on acct schema or 
+	 * 			DateAcct < value on sysconfig Custom_Acct_By_BP_Currency_Cutoff_Date then skip
+	 * 
+	 * 	used on Doc_AllocationHdr, Doc_InOut, Doc_Invoice, Doc_MatchInv, Doc_Payment
+	 * 	
+	 */
+	public boolean useCustomBPAcctByCurrency(int AccountingSchemaCurrency_ID, int C_Currency_ID){
+		
+		if (AccountingSchemaCurrency_ID==C_Currency_ID) {
+			return false;
+		}
+		
+		Timestamp cutOffDate = MSysConfig.getTimestampValue("Custom_Acct_By_BP_Currency_Cutoff_Date");
+		if (getDateAcct().before(cutOffDate)) 
+			return false;
+		
+		return true;
+	}
+	/*
+	 * 	end code
+	 */
+	
+	/*
+	 * 	Custom code from taowi
+	 */
+	public BigDecimal getTaxInvoice(){
+		if(get_TableName().equals(MInvoice.Table_Name)){
+			MInvoice invoice = (MInvoice) getPO();
+			String sql = "SELECT DP_Invoice_ID FROM M_MatchDownPayment WHERE C_Invoice_ID=?";
+			int invDP_ID = DB.getSQLValue(getTrxName(), sql, invoice.getC_Invoice_ID());
+			sql = "SELECT TaxAmt FROM C_InvoiceTax WHERE C_Invoice_ID=?";
+			BigDecimal tax = DB.getSQLValueBD(getTrxName(), sql, invDP_ID);
+			if(tax!=null)
+				return tax;
+		}
+		return Env.ZERO;
+	}
+	
 }   //  Doc

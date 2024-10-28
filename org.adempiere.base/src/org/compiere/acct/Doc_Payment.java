@@ -131,7 +131,23 @@ public class Doc_Payment extends Doc
 			if (getC_Charge_ID() != 0)
 				acct = MCharge.getAccount(getC_Charge_ID(), as);
 			else if (m_Prepayment)
-				acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);
+				
+				/*
+				 * 	add custom code from taowi-1.0
+				 * 	AR AP Invoice Acct By Currency
+				 * 	by @David, added by @figo
+				 */
+				//@David
+				//acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);
+				//removed prepayment from custom posting by currency
+				if (!useCustomBPAcctByCurrency(as.getC_Currency_ID(),getC_Currency_ID())) 
+					acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);					
+				else
+					acct = getAccount(Doc.ACCTTYPE_C_Prepayment_ByCurrency, as);
+				//@David End
+				/*
+				 * 	end code
+				 */
 			else
 				acct = getAccount(Doc.ACCTTYPE_UnallocatedCash, as);
 			fl = fact.createLine(null, acct,
@@ -147,7 +163,21 @@ public class Doc_Payment extends Doc
 			if (getC_Charge_ID() != 0)
 				acct = MCharge.getAccount(getC_Charge_ID(), as);
 			else if (m_Prepayment)
-				acct = getAccount(Doc.ACCTTYPE_V_Prepayment, as);
+				/*
+				 * 	add custom code from taowi-1.0
+				 * 	AR AP Invoice Acct By Currency
+				 * 	by @David, added by @figo
+				 */
+				//acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);
+				//removed prepayment from custom posting by currency
+				if (!useCustomBPAcctByCurrency(as.getC_Currency_ID(),getC_Currency_ID())) 
+					acct = getAccount(Doc.ACCTTYPE_C_Prepayment, as);					
+				else
+					acct = getAccount(Doc.ACCTTYPE_C_Prepayment_ByCurrency, as);
+				//@David End
+				/*
+				 * 	end code
+				 */
 			else
 				acct = getAccount(Doc.ACCTTYPE_PaymentSelect, as);
 			FactLine fl = fact.createLine(null, acct,

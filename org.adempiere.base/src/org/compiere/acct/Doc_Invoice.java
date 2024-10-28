@@ -46,6 +46,7 @@ import org.compiere.model.X_M_Cost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.idempiere.fa.model.MFADefaultAccount;
 
 /**
  *  Post Invoice Documents.
@@ -83,6 +84,8 @@ public class Doc_Invoice extends Doc
 	protected boolean			m_allLinesService = true;
 	/** All lines are product item		*/
 	protected boolean			m_allLinesItem = true;
+	
+	protected boolean isFixedAssetsInvoice = false;
 
 	/**
 	 *  Load Specific Document Details
@@ -98,7 +101,8 @@ public class Doc_Invoice extends Doc
 		setAmount(Doc.AMTTYPE_Gross, invoice.getGrandTotal());
 		setAmount(Doc.AMTTYPE_Net, invoice.getTotalLines());
 		setAmount(Doc.AMTTYPE_Charge, invoice.getChargeAmt());
-
+		isFixedAssetsInvoice = invoice.isFixedAssetInvoice();
+		
 		//	Contained Objects
 		m_taxes = loadTaxes();
 		p_lines = loadLines(invoice);
@@ -448,21 +452,34 @@ public class Doc_Invoice extends Doc
 			{
 				amt = p_lines[i].getAmtSource();
 				BigDecimal dAmt = null;
-				if (as.isTradeDiscountPosted())
-				{
-					BigDecimal discount = p_lines[i].getDiscount();
-					if (discount != null && discount.signum() != 0)
+				MInvoiceLine line = (MInvoiceLine) p_lines[i].getPO();
+				
+				/*
+				 * 	Fixed Asset
+				 * 	added by @figo
+				 */
+				if (isFixedAssetsInvoice && line.getA_Asset_ID() > 0) {
+					fact.createLine (p_lines[i],
+							MFADefaultAccount.getAssetRevenueAccount(as),
+							getC_Currency_ID(), null, amt);
+				} else {
+					if (as.isTradeDiscountPosted())
 					{
-						amt = amt.add(discount);
-						dAmt = discount;
-						fact.createLine (p_lines[i],
-								p_lines[i].getAccount(ProductCost.ACCTTYPE_P_TDiscountGrant, as),
-								getC_Currency_ID(), dAmt, null);
+						BigDecimal discount = p_lines[i].getDiscount();
+						if (discount != null && discount.signum() != 0)
+						{
+							amt = amt.add(discount);
+							dAmt = discount;
+							fact.createLine (p_lines[i],
+									p_lines[i].getAccount(ProductCost.ACCTTYPE_P_TDiscountGrant, as),
+									getC_Currency_ID(), dAmt, null);
+						}
 					}
+					fact.createLine (p_lines[i],
+						p_lines[i].getAccount(ProductCost.ACCTTYPE_P_Revenue, as),
+						getC_Currency_ID(), null, amt);
 				}
-				fact.createLine (p_lines[i],
-					p_lines[i].getAccount(ProductCost.ACCTTYPE_P_Revenue, as),
-					getC_Currency_ID(), null, amt);
+				
 				if (!p_lines[i].isItem())
 				{
 					grossAmt = grossAmt.subtract(amt);
@@ -471,7 +488,24 @@ public class Doc_Invoice extends Doc
 			}
 
 			//  Receivables     DR
-			int receivables_ID = getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
+			/*
+			 * 	AR AP Acct by Currency
+			 * 	author @David
+			 * 	added and enhanced by @figo
+			 */
+			int receivables_ID;
+			
+			if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency"))
+				receivables_ID = getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
+			else 
+				if (!useCustomBPAcctByCurrency(as.getC_Currency_ID(),getC_Currency_ID())) 
+					receivables_ID=getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
+				else
+					receivables_ID=getValidCombination_ID(Doc.ACCTTYPE_C_Receivable_ByCurrency, as);
+			/*
+			 *	End AR AP Acct by Currency
+			 */
+			
 			int receivablesServices_ID = receivables_ID; // Receivable Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| receivables_ID == receivablesServices_ID)
@@ -553,7 +587,25 @@ public class Doc_Invoice extends Doc
 			}
 
 			//  Receivables             CR
-			int receivables_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable, as);
+			/*
+			 * 	AR AP Acct by Currency
+			 * 	author @David
+			 * 	added and enhanced by @figo
+			 */
+			int receivables_ID;
+			
+			if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency"))
+				receivables_ID = getValidCombination_ID (Doc.ACCTTYPE_C_Receivable, as);
+			else
+				if (!useCustomBPAcctByCurrency(as.getC_Currency_ID(),getC_Currency_ID()))
+					receivables_ID=getValidCombination_ID(Doc.ACCTTYPE_C_Receivable, as);
+				else
+					receivables_ID=getValidCombination_ID(Doc.ACCTTYPE_C_Receivable_ByCurrency, as);
+			
+			/*
+			 * 	end AR AP by Currency
+			 */
+			
 			int receivablesServices_ID = receivables_ID; // Receivable Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| receivables_ID == receivablesServices_ID)
@@ -659,7 +711,26 @@ public class Doc_Invoice extends Doc
 			}
 
 			//  Liability               CR
-			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
+			/*
+			 * 	AR AP Acct by Currency
+			 * 	author @David
+			 * 	added and enhanced by @figo
+			 */
+			int payables_ID;
+			
+			if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency"))
+				payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
+			else
+				if(!useCustomBPAcctByCurrency(as.getC_Currency_ID(),getC_Currency_ID())){
+					payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
+				}
+				else
+					payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_ByCurrency, as);
+			
+			/*
+			 * 	end AR AP Acct by Currency
+			 */
+			
 			int payablesServices_ID = payables_ID; // Liability Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| payables_ID == payablesServices_ID)
@@ -766,7 +837,26 @@ public class Doc_Invoice extends Doc
 			}
 
 			//  Liability       DR
-			int payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
+			/*
+			 * 	AR AP Acct by Currency
+			 * 	author @David
+			 * 	added and enhanced by @figo
+			 */
+			int payables_ID;
+			
+			if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency"))
+				payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
+			else
+				if(!useCustomBPAcctByCurrency(as.getC_Currency_ID(),getC_Currency_ID())){
+					payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability, as);
+				}
+				else
+					payables_ID = getValidCombination_ID (Doc.ACCTTYPE_V_Liability_ByCurrency, as);
+			
+			/*
+			 * 	end AR AP Acct by Currency
+			 */
+			
 			int payablesServices_ID = payables_ID; // Liability Services account Deprecated IDEMPIERE-362
 			if (m_allLinesItem || !as.isPostServices()
 				|| payables_ID == payablesServices_ID)
@@ -805,6 +895,24 @@ public class Doc_Invoice extends Doc
 		}
 		//
 		facts.add(fact);
+		
+		/** 
+		 * Commitment release
+		 * added by @figo										****/
+		if (getDocumentType().equals(DOCTYPE_APInvoice) && as.isAccrual() && as.isCreatePOCommitment())
+		{
+			for (int i = 0; i < p_lines.length; i++)
+			{
+				if (p_lines[i].getCharge_ID()>0) {
+					fact = Doc_Order.get_CommitmentRelease(as, this,
+							p_lines[i].getQty(), p_lines[i].get_ID(), Env.ONE);
+					if (fact == null)
+						return null;
+					facts.add(fact);
+				}
+			}
+		}	//	end Commitment
+		
 		return facts;
 	}   //  createFact
 

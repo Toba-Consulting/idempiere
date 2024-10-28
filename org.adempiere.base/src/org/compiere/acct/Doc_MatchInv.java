@@ -45,6 +45,8 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MProduct;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTax;
 import org.compiere.model.MUOM;
 import org.compiere.model.ProductCost;
@@ -180,239 +182,338 @@ public class Doc_MatchInv extends Doc
 			boolean isCreditMemo = m_invoice.isCreditMemo();
 			if (!isCreditMemo)
 				return facts;
-			else
-				return createCreditMemoFacts(as);
+			else {
+				/*
+				 * 	feature taowi-2.0
+				 * 	added by @figo
+				 * 	menambahkan sysconfig 
+				 * 	untuk case dimana tidak perlu posting 
+				 * 	jika producttype expense atau service 
+				 */
+				
+				if (isCreatePosting(false))
+					return createCreditMemoFacts(as);
+				/*
+				 * 	end
+				 */
+			}
 		}
 		
-		if (m_receiptLine.getParent().getC_DocType().getDocBaseType().equals(DOCTYPE_MatShipment))
-			return createMatShipmentFacts(as);
+		if (m_receiptLine.getParent().getC_DocType().getDocBaseType().equals(DOCTYPE_MatShipment)) {
+			/*
+			 * 	feature taowi-2.0
+			 * 	added by @figo
+			 * 	menambahkan sysconfig 
+			 * 	untuk case dimana tidak perlu posting 
+			 * 	jika producttype expense atau service 
+			 */		
+			if (isCreatePosting(false))
+				return createMatShipmentFacts(as);
+			/*
+			 * 	end
+			 */
+		}
 					
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		setC_Currency_ID (as.getC_Currency_ID());
 		boolean isInterOrg = isInterOrg(as);
 
-		//  NotInvoicedReceipt      DR
-		//  From Receipt
-		BigDecimal multiplier = getQty()
-			.divide(m_receiptLine.getMovementQty(), 12, RoundingMode.HALF_UP);
-		FactLine dr = fact.createLine (null,
-			getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
-			as.getC_Currency_ID(), Env.ONE, null);			// updated below
-		if (dr == null)
-		{
-			p_Error = "No Product Costs";
-			return null;
-		}
-		dr.setQty(getQty());
-		BigDecimal temp = dr.getAcctBalance();
-		//	Set AmtAcctCr/Dr from Receipt (sets also Project)
-		if (m_matchInv.isReversal())
-		{
-			if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-					m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
+		/*
+		 * 	feature taowi-2.0
+		 * 	added by @figo
+		 * 	menambahkan sysconfig 
+		 * 	untuk case dimana tidak perlu posting 
+		 * 	jika producttype expense atau service 
+		 */
+		
+		if (isCreatePosting(false)) {
+			//@PhieAlbert
+			MMatchInv reversalMatchInv = new MMatchInv(getCtx(), m_matchInv.getReversal_ID(), getTrxName());
+			//end @PhieAlbert
+			
+			//  NotInvoicedReceipt      DR
+			//  From Receipt
+			BigDecimal multiplier = getQty()
+				.divide(m_receiptLine.getMovementQty(), 12, RoundingMode.HALF_UP);
+			
+			/*
+			 * 	AR AP Acct by Currency
+			 * 	author @David, added by @figo
+			 * 	add enhancement with flag IsARAPPostingbyCurrency from Accounting Schema
+			 */
+			
+			FactLine dr;
+			
+			if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency")) {
+				dr = fact.createLine (null,
+					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+					as.getC_Currency_ID(), Env.ONE, null);			// updated below
+			} else {
+				if (!useCustomBPAcctByCurrency(as.getC_Currency_ID(),m_invoiceLine.getC_Invoice().getC_Currency_ID())) {
+					dr = fact.createLine (null,
+					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+					as.getC_Currency_ID(), Env.ONE, null);
+				}
+				else{
+					
+					String sql = "SELECT NotInvoicedReceipts_Acct "
+							+ "FROM C_BP_V_InvAcctByCurrency "
+							+ "WHERE C_Currency_ID = " + m_invoiceLine.getC_Invoice().getC_Currency_ID() 
+							+ " AND C_BPartner_ID = " + m_invoiceLine.getC_Invoice().getC_BPartner_ID()
+							+ " AND C_AcctSchema_ID = " + as.getC_AcctSchema_ID();
+					int ValidComb_ID=DB.getSQLValue(getTrxName(), sql);
+					MAccount account = new MAccount(getCtx(), ValidComb_ID, getTrxName());
+					dr = fact.createLine (null,
+					account,
+					as.getC_Currency_ID(), Env.ONE, null);
+				}
+			}
+			
+			/*	
+			 * 	end AR AP Acct by Currency
+			 */
+			
+			if (dr == null)
 			{
-				p_Error = "Failed to create reversal entry";
+				p_Error = "No Product Costs";
 				return null;
 			}
-		}
-		else
-		{
-			if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
-				m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
-				multiplier))
+			dr.setQty(getQty());
+			BigDecimal temp = dr.getAcctBalance();
+			//	Set AmtAcctCr/Dr from Receipt (sets also Project)
+			if (m_matchInv.isReversal() && m_matchInv.getCreated().after(m_matchInv.getReversal().getCreated()))
 			{
-				p_Error = "Mat.Receipt not posted yet";
-				return null;
-			}
-		}
-		if (log.isLoggable(Level.FINE)) log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance()
-			+ ") - " + dr.toString());
-
-		//  InventoryClearing               CR
-		//  From Invoice
-		MAccount expense = m_pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-		if (m_pc.isService())
-			expense = m_pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
-		BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
-		multiplier = getQty()
-			.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP);
-		if (multiplier.compareTo(Env.ONE) != 0)
-			LineNetAmt = LineNetAmt.multiply(multiplier);
-		if (m_pc.isService())
-			LineNetAmt = dr.getAcctBalance();	//	book out exact receipt amt
-		FactLine cr = null;
-		if (as.isAccrual())
-		{
-			cr = fact.createLine (null, expense,
-				as.getC_Currency_ID(), null, LineNetAmt);		//	updated below
-			if (cr == null)
-			{
-				if (log.isLoggable(Level.FINE)) log.fine("Line Net Amt=0 - M_Product_ID=" + getM_Product_ID()
-					+ ",Qty=" + getQty() + ",InOutQty=" + m_receiptLine.getMovementQty());
-
-				cr = fact.createLine (null, expense, as.getC_Currency_ID(), null, Env.ONE);
-				cr.setAmtAcctCr(BigDecimal.ZERO);
-				cr.setAmtSourceCr(BigDecimal.ZERO);
-			}
-			temp = cr.getAcctBalance();
-			if (m_matchInv.isReversal())
-			{
-				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
+				
+				if (!reversalMatchInv.isPosted()) {
+					p_Error = "Cannot post this match invoice, please repost match inv : " + m_matchInv.getReversal().getDocumentNo();
+					return null;
+				}
+				
+				if (!dr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
+						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE))
 				{
 					p_Error = "Failed to create reversal entry";
 					return null;
 				}
 			}
 			else
+			{
+				if (!dr.updateReverseLine (MInOut.Table_ID, 		//	Amt updated
+					m_receiptLine.getM_InOut_ID(), m_receiptLine.getM_InOutLine_ID(),
+					multiplier))
+				{
+					p_Error = "Mat.Receipt not posted yet";
+					return null;
+				}
+			}
+			if (log.isLoggable(Level.FINE)) log.fine("CR - Amt(" + temp + "->" + dr.getAcctBalance()
+				+ ") - " + dr.toString());
+	
+			//  InventoryClearing               CR
+			//  From Invoice
+			MAccount expense = m_pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			if (m_pc.isService())
+				expense = m_pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+			BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
+			multiplier = getQty()
+				.divide(m_invoiceLine.getQtyInvoiced(), 12, RoundingMode.HALF_UP);
+			if (multiplier.compareTo(Env.ONE) != 0)
+				LineNetAmt = LineNetAmt.multiply(multiplier);
+			if (m_pc.isService())
+				LineNetAmt = dr.getAcctBalance();	//	book out exact receipt amt
+			FactLine cr = null;
+			if (as.isAccrual())
+			{
+				cr = fact.createLine (null, expense,
+					as.getC_Currency_ID(), null, LineNetAmt);		//	updated below
+				if (cr == null)
+				{
+					if (log.isLoggable(Level.FINE)) log.fine("Line Net Amt=0 - M_Product_ID=" + getM_Product_ID()
+						+ ",Qty=" + getQty() + ",InOutQty=" + m_receiptLine.getMovementQty());
+	
+					cr = fact.createLine (null, expense, as.getC_Currency_ID(), null, Env.ONE);
+					cr.setAmtAcctCr(BigDecimal.ZERO);
+					cr.setAmtSourceCr(BigDecimal.ZERO);
+				}
+				temp = cr.getAcctBalance();
+				if (m_matchInv.isReversal() && m_matchInv.getCreated().after(m_matchInv.getReversal().getCreated()))
+				{
+					if (!reversalMatchInv.isPosted()) {
+						p_Error = "Cannot post this match invoice, please repost match inv : " + m_matchInv.getReversal().getDocumentNo();
+						return null;
+					}
+					
+					if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
+							m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
+					{
+						p_Error = "Failed to create reversal entry";
+						return null;
+					}
+				}
+				else // track as asset
+				{
+					cr.setQty(getQty().negate());
+	
+					//	Set AmtAcctCr/Dr from Invoice (sets also Project)
+					if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
+						m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+					{
+						p_Error = "Invoice not posted yet";
+						return null;
+					}
+				}
+				if (log.isLoggable(Level.FINE)) log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance()
+					+ ") - " + cr.toString());
+			}
+			else	//	Cash Acct
+			{
+				MInvoice invoice = m_invoiceLine.getParent();
+				if (as.getC_Currency_ID() != invoice.getC_Currency_ID())
+					LineNetAmt = MConversionRate.convert(getCtx(), LineNetAmt,
+						invoice.getC_Currency_ID(), as.getC_Currency_ID(),
+						invoice.getDateAcct(), invoice.getC_ConversionType_ID(),
+						invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
+				cr = fact.createLine (null, expense,
+					as.getC_Currency_ID(), null, LineNetAmt);
+				if (m_matchInv.isReversal() && m_matchInv.getCreated().after(m_matchInv.getReversal().getCreated()))
+				{
+					
+					if (!reversalMatchInv.isPosted()) {
+						p_Error = "Cannot post this match invoice, please repost match inv : " + m_matchInv.getReversal().getDocumentNo();
+						return null;
+					}
+					
+					if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
+							m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
+					{
+						p_Error = "Failed to create reversal entry";
+						return null;
+					}
+				}
+				else
+				{
+					int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
+					cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+				}
+			}
+			
+			// gain/loss + rounding adjustment
+			if (m_receiptLine != null && m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())	//	in foreign currency
+			{
+				mrFactLines.add(dr);
+				p_Error = createReceiptGainLoss(as, fact, getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as), m_receiptLine.getParent(), dr.getAmtSourceDr(), dr.getAmtAcctDr(), mrGainLossFactLines, mrFactLines);
+				if (p_Error != null)
+					return null;
+			}
+			// rounding adjustment
+			if (!mrFactLines.isEmpty())
+			{
+				p_Error = createReceiptRoundingCorrection(as, fact, getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as), mrGainLossFactLines, mrFactLines);
+				if (p_Error != null)
+					return null;
+			}
+			// gain/loss
+			if (m_invoiceLine != null && m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())	//	in foreign currency
+			{
+				MInvoice invoice = m_invoiceLine.getParent();
+				if (!invList.contains(invoice))
+					invList.add(invoice);
+				if (!invLineList.contains(m_invoiceLine))
+					invLineList.add(m_invoiceLine);
+				ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
+				if (factLineList == null)
+					factLineList = new ArrayList<FactLine>();
+				factLineList.add(cr);
+				htFactLineInv.put(invoice.get_ID(), factLineList);
+				p_Error = createInvoiceGainLoss(as, fact, expense, invoice, cr.getAmtSourceCr(), cr.getAmtAcctCr(), invGainLossFactLines, htFactLineInv);
+				if (p_Error != null)
+					return null;
+			}
+			// rounding adjustment
+			if (!htFactLineInv.isEmpty())
+			{
+				p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, invLineList, htFactLineInv);
+				if (p_Error != null)
+					return null;
+			}
+			
+			cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
+			cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
+			cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
+			cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
+			cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
+			cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
+			cr.setUser1_ID(m_invoiceLine.getUser1_ID());
+			cr.setUser2_ID(m_invoiceLine.getUser2_ID());
+			if (m_matchInv.isReversal())
 			{
 				cr.setQty(getQty().negate());
-
-				//	Set AmtAcctCr/Dr from Invoice (sets also Project)
-				if (!cr.updateReverseLine (MInvoice.Table_ID, 		//	Amt updated
-					m_invoiceLine.getC_Invoice_ID(), m_invoiceLine.getC_InvoiceLine_ID(), multiplier))
+			}
+	
+			//AZ Goodwill
+			//Desc: Source Not Balanced problem because Currency is Difference - PO=CNY but AP=USD
+			//see also Fact.java: checking for isMultiCurrency()
+			if (dr.getC_Currency_ID() != cr.getC_Currency_ID())
+				setIsMultiCurrency(true);
+			//end AZ
+	
+			// Avoid usage of clearing accounts
+			// If both accounts Not Invoiced Receipts and Inventory Clearing are equal
+			// then remove the posting
+	
+			MAccount acct_db =  dr.getAccount(); // not_invoiced_receipts
+			MAccount acct_cr = cr.getAccount(); // inventory_clearing
+	
+			if ((!as.isPostIfClearingEqual()) && acct_db.equals(acct_cr) && (!isInterOrg)) {
+	
+				BigDecimal debit = dr.getAmtSourceDr();
+				BigDecimal credit = cr.getAmtSourceCr();
+	
+				if (debit.compareTo(credit) == 0) {
+					fact.remove(dr);
+					fact.remove(cr);
+				}
+	
+			}
+			// End Avoid usage of clearing accounts
+	
+	
+			//  Invoice Price Variance 	difference
+			BigDecimal ipv = cr.getAcctBalance().add(dr.getAcctBalance()).negate();
+			processInvoicePriceVariance(as, fact, ipv);
+			if (log.isLoggable(Level.FINE)) log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
+	
+			if (!m_pc.isService()) {
+				String error = createMatchInvCostDetail(as);
+				if (error != null && error.trim().length() > 0)
 				{
-					p_Error = "Invoice not posted yet";
+					p_Error = error;
 					return null;
 				}
 			}
-			if (log.isLoggable(Level.FINE)) log.fine("DR - Amt(" + temp + "->" + cr.getAcctBalance()
-				+ ") - " + cr.toString());
-		}
-		else	//	Cash Acct
-		{
-			MInvoice invoice = m_invoiceLine.getParent();
-			if (as.getC_Currency_ID() != invoice.getC_Currency_ID())
-				LineNetAmt = MConversionRate.convert(getCtx(), LineNetAmt,
-					invoice.getC_Currency_ID(), as.getC_Currency_ID(),
-					invoice.getDateAcct(), invoice.getC_ConversionType_ID(),
-					invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
-			cr = fact.createLine (null, expense,
-				as.getC_Currency_ID(), null, LineNetAmt);
-			if (m_matchInv.isReversal())
-			{
-				if (!cr.updateReverseLine (MMatchInv.Table_ID, 		//	Amt updated
-						m_matchInv.getReversal_ID(), 0, BigDecimal.ONE, dr))
-				{
-					p_Error = "Failed to create reversal entry";
-					return null;
-				}
-			}
-			else
-			{
-				int precision = MUOM.getPrecision(getCtx(), m_invoiceLine.getC_UOM_ID());
-				cr.setQty(getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
-			}
-		}
-		
-		// gain/loss + rounding adjustment
-		if (m_receiptLine != null && m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())	//	in foreign currency
-		{
-			mrFactLines.add(dr);
-			p_Error = createReceiptGainLoss(as, fact, getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as), m_receiptLine.getParent(), dr.getAmtSourceDr(), dr.getAmtAcctDr(), mrGainLossFactLines, mrFactLines);
-			if (p_Error != null)
-				return null;
-		}
-		// rounding adjustment
-		if (!mrFactLines.isEmpty())
-		{
-			p_Error = createReceiptRoundingCorrection(as, fact, getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as), mrGainLossFactLines, mrFactLines);
-			if (p_Error != null)
-				return null;
-		}
-		// gain/loss
-		if (m_invoiceLine != null && m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())	//	in foreign currency
-		{
-			MInvoice invoice = m_invoiceLine.getParent();
-			if (!invList.contains(invoice))
-				invList.add(invoice);
-			if (!invLineList.contains(m_invoiceLine))
-				invLineList.add(m_invoiceLine);
-			ArrayList<FactLine> factLineList = htFactLineInv.get(invoice.get_ID());
-			if (factLineList == null)
-				factLineList = new ArrayList<FactLine>();
-			factLineList.add(cr);
-			htFactLineInv.put(invoice.get_ID(), factLineList);
-			p_Error = createInvoiceGainLoss(as, fact, expense, invoice, cr.getAmtSourceCr(), cr.getAmtAcctCr(), invGainLossFactLines, htFactLineInv);
-			if (p_Error != null)
-				return null;
-		}
-		// rounding adjustment
-		if (!htFactLineInv.isEmpty())
-		{
-			p_Error = createInvoiceRoundingCorrection(as, fact, expense, invGainLossFactLines, invList, invLineList, htFactLineInv);
-			if (p_Error != null)
-				return null;
-		}
-		
-		cr.setC_Activity_ID(m_invoiceLine.getC_Activity_ID());
-		cr.setC_Campaign_ID(m_invoiceLine.getC_Campaign_ID());
-		cr.setC_Project_ID(m_invoiceLine.getC_Project_ID());
-		cr.setC_ProjectPhase_ID(m_invoiceLine.getC_ProjectPhase_ID());
-		cr.setC_ProjectTask_ID(m_invoiceLine.getC_ProjectTask_ID());
-		cr.setC_UOM_ID(m_invoiceLine.getC_UOM_ID());
-		cr.setUser1_ID(m_invoiceLine.getUser1_ID());
-		cr.setUser2_ID(m_invoiceLine.getUser2_ID());
-		if (m_matchInv.isReversal())
-		{
-			cr.setQty(getQty().negate());
-		}
-
-		//AZ Goodwill
-		//Desc: Source Not Balanced problem because Currency is Difference - PO=CNY but AP=USD
-		//see also Fact.java: checking for isMultiCurrency()
-		if (dr.getC_Currency_ID() != cr.getC_Currency_ID())
-			setIsMultiCurrency(true);
-		//end AZ
-
-		// Avoid usage of clearing accounts
-		// If both accounts Not Invoiced Receipts and Inventory Clearing are equal
-		// then remove the posting
-
-		MAccount acct_db =  dr.getAccount(); // not_invoiced_receipts
-		MAccount acct_cr = cr.getAccount(); // inventory_clearing
-
-		if ((!as.isPostIfClearingEqual()) && acct_db.equals(acct_cr) && (!isInterOrg)) {
-
-			BigDecimal debit = dr.getAmtSourceDr();
-			BigDecimal credit = cr.getAmtSourceCr();
-
-			if (debit.compareTo(credit) == 0) {
-				fact.remove(dr);
-				fact.remove(cr);
-			}
-
-		}
-		// End Avoid usage of clearing accounts
-
-
-		//  Invoice Price Variance 	difference
-		BigDecimal ipv = cr.getAcctBalance().add(dr.getAcctBalance()).negate();
-		processInvoicePriceVariance(as, fact, ipv);
-		if (log.isLoggable(Level.FINE)) log.fine("IPV=" + ipv + "; Balance=" + fact.getSourceBalance());
-
-		String error = createMatchInvCostDetail(as);
-		if (error != null && error.trim().length() > 0)
-		{
-			p_Error = error;
-			return null;
-		}
-		//
-		facts.add(fact);
-
-		/** Commitment release										****/
-		if (as.isAccrual() && as.isCreatePOCommitment())
-		{
-			fact = Doc_Order.getCommitmentRelease(as, this,
-				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
-			if (fact == null)
-				return null;
+			//
 			facts.add(fact);
-		}	//	Commitment
-
-		return facts;
+	
+			/** Commitment release										****/
+			/*
+			if (as.isAccrual() && as.isCreatePOCommitment())
+			{
+				fact = Doc_Order.getCommitmentRelease(as, this,
+					getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
+				if (fact == null)
+					return null;
+				facts.add(fact);
+			}	//	Commitment
+			*/
+	
+			return facts;
+		} else {
+			return facts;
+		}
 	}   //  createFact
+	
+	
 
 
 	/**
@@ -920,6 +1021,11 @@ public class Doc_MatchInv extends Doc
 		facts.add(fact);
 
 		/** Commitment release										****/
+		/*
+		 * 	comment out
+		 * 	author @win, rewrite @figo
+		 * 	dont posting if using commitment accounting	
+		 * 
 		if (as.isAccrual() && as.isCreatePOCommitment())
 		{
 			fact = Doc_Order.getCommitmentRelease(as, this,
@@ -928,6 +1034,9 @@ public class Doc_MatchInv extends Doc
 				return null;
 			facts.add(fact);
 		}	//	Commitment
+		*
+		*	end comment out 
+		*/
 			
 		return facts;
 	}
@@ -1229,6 +1338,7 @@ public class Doc_MatchInv extends Doc
 		facts.add(fact);
 
 		/** Commitment release										****/
+		/*
 		if (as.isAccrual() && as.isCreatePOCommitment())
 		{
 			fact = Doc_Order.getCommitmentRelease(as, this,
@@ -1237,6 +1347,7 @@ public class Doc_MatchInv extends Doc
 				return null;
 			facts.add(fact);
 		}	//	Commitment
+		*/
 		
 		return facts;
 	}
@@ -2681,5 +2792,45 @@ public class Doc_MatchInv extends Doc
 		}
 		
 		return isLineFullyMatched;
+	}
+	
+	boolean isPostProductExpense = MSysConfig.getBooleanValue("Post_Product_Expense_on_Mat_Receipt_and_Match_Inv", false);
+	boolean isPostProductService = MSysConfig.getBooleanValue("Post_Product_Service_on_Mat_Receipt_and_Match_Inv", false);
+	
+	protected boolean isCreatePosting (boolean createPosting) {
+
+		if (m_invoiceLine.getM_Product().getProductType().equals(MProduct.PRODUCTTYPE_ExpenseType)
+				|| m_invoiceLine.getM_Product().getProductType().equals(MProduct.PRODUCTTYPE_Service))
+		{
+			if (isPostProductExpense && isPostProductService)
+			{
+				createPosting = true;
+			}
+			else
+			{
+				if (isPostProductExpense 
+						&& !isPostProductService
+						&& m_invoiceLine.getM_Product().getProductType().equals(MProduct.PRODUCTTYPE_ExpenseType))
+				{
+					createPosting = true;
+				}
+				else if (!isPostProductExpense 
+						&& isPostProductService
+						&& m_invoiceLine.getM_Product().getProductType().equals(MProduct.PRODUCTTYPE_Service))
+				{
+					createPosting = true;
+				}
+				else
+				{
+					createPosting = false;
+				}
+			}
+		}
+		else
+		{
+			createPosting = true;
+		}
+		
+		return createPosting;
 	}
 }   //  Doc_MatchInv

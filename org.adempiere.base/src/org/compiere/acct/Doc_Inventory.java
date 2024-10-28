@@ -131,7 +131,8 @@ public class Doc_Inventory extends Doc
 
 			BigDecimal qtyDiff = Env.ZERO;
 			BigDecimal amtDiff = Env.ZERO;
-			if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv))
+			if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv)
+					|| MDocType.DOCSUBTYPEINV_MiscReceipt.equals(docSubTypeInv))
 				qtyDiff = line.getQtyInternalUse().negate();
 			else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
@@ -241,6 +242,19 @@ public class Doc_Inventory extends Doc
 			{
 				costs = line.getAmtSource();
 				product = line.getProduct();
+				
+				boolean isCostDetailExists = false;
+				BigDecimal currentQty = Env.ZERO;
+				if (!as.getCostingMethod().equals(MAcctSchema.COSTINGMETHOD_StandardCosting))
+				{
+					MCostDetail cd = MCostDetail.get (Env.getCtx(), "M_InventoryLine_ID=?", 
+							inventoryLine.get_ID(), inventoryLine.getM_AttributeSetInstance_ID(), as.getC_AcctSchema_ID(), p_po.get_TrxName());
+					if (cd != null) {
+						isCostDetailExists = true;
+						currentQty = cd.getCurrentQty();
+					}
+				}
+				
 				int orgId = line.getAD_Org_ID();
 				int asiId = line.getM_AttributeSetInstance_ID();
 				if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
@@ -253,10 +267,12 @@ public class Doc_Inventory extends Doc
 				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 					orgId = 0;
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
-				MCost cost = MCost.get(product, asiId, as, 
-						orgId, ce.getM_CostElement_ID(), getTrxName());					
-				DB.getDatabase().forUpdate(cost, 120);
-				BigDecimal currentQty = cost.getCurrentQty();
+				if (!isCostDetailExists) {
+					MCost cost = MCost.get(product, asiId, as, 
+							orgId, ce.getM_CostElement_ID(), getTrxName());					
+					DB.getDatabase().forUpdate(cost, 120);
+					currentQty = cost.getCurrentQty();
+				}
 				adjustmentDiff = costs;
 				costs = costs.multiply(currentQty);
 			}
@@ -363,7 +379,7 @@ public class Doc_Inventory extends Doc
 				if (dr != null)
 				{
 					dr.setM_Locator_ID(line.getM_Locator_ID());
-					if (isReversal(line) && isDifferentPeriodReversalAccrual)
+					if (isReversal(line) && !isDifferentPeriodReversalAccrual)
 					{
 						//	Set AmtAcctDr from Original Phys.Inventory
 						if (!dr.updateReverseLine (MInventory.Table_ID,
@@ -413,7 +429,8 @@ public class Doc_Inventory extends Doc
 							{
 								p_Error = "Original Physical Inventory not posted yet";
 								return null;
-							}							
+							}		
+							costs = cr.getAcctBalance(); //get original cost
 						}
 					}
 				}
@@ -446,6 +463,10 @@ public class Doc_Inventory extends Doc
 							costDetailAmt, getC_Currency_ID(), as.getC_Currency_ID(),
 							getDateAcct(), 0, getAD_Client_ID(), getAD_Org_ID(), true);
 				}
+				
+				if(isReversal(line))
+					costDetailAmt = costDetailAmt.negate();
+				
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 				{
 					if (line.getM_AttributeSetInstance_ID() == 0 ) 

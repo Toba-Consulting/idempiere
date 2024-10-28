@@ -770,6 +770,25 @@ public class Doc_InOut extends Doc
 				MAccount assets = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				if (product.isService())
 				{
+					
+					/*
+					 * 	@win change debit posting for material receipt to asset clearing
+					 */
+					if (product.getProductType().equals(MProduct.PRODUCTTYPE_Asset)) {
+						String sql = "SELECT A_Asset_Clearing_Acct FROM FA_DefaultAccount WHERE C_AcctSchema_ID=?";
+						int accountID = DB.getSQLValue(getTrxName(), sql, as.get_ID());
+						if (accountID > 1)
+							assets = MAccount.get(getCtx(), accountID);
+						else {
+	                    	p_Error = "Posting aborted... Asset Clearing Account Not Set";
+	                    	log.log(Level.WARNING, p_Error);
+	                    	return null;
+						}
+					}
+					/*
+					 * 	end @win
+					 */
+					
 					//if the line is a Outside Processing then DR WIP
 					if(line.getPP_Cost_Collector_ID() > 0)
 						assets = line.getAccount(ProductCost.ACCTTYPE_P_WorkInProcess, as);
@@ -810,12 +829,70 @@ public class Doc_InOut extends Doc
 						return null;
 					}
 				}
-
+				
+				/*
+				 * 	author @David
+				 * 	added and enhanced by @figo 
+				 * 	AR AP Acct by Currency
+				 * 	enhanced to use flag IsARAPPostingbyCurrency from Accounting Schema
+				 */
+				
 				//  NotInvoicedReceipt				CR
-				cr = fact.createLine(line,
-					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
-					C_Currency_ID, null, costs);
-				//
+				
+				if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency")){
+					cr = fact.createLine(line,
+						getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+						C_Currency_ID, null, costs);
+					//
+				} else {
+					if (!isReversal(line)) {
+						if(!useCustomBPAcctByCurrency(as.getC_Currency_ID(),orderLine.getC_Currency_ID())){
+							cr = fact.createLine(line,
+									getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+									C_Currency_ID, null, costs);
+						}
+						else{
+							int lineCurrency_ID = orderLine.getC_Currency_ID();
+							String sql = "SELECT NotInvoicedReceipts_Acct "
+									+ "FROM C_BP_V_InvAcctByCurrency "
+									+ "WHERE C_Currency_ID = " + C_Currency_ID
+									+ " AND C_BPartner_ID = " + getC_BPartner_ID()
+									+ " AND C_AcctSchema_ID = " + as.getC_AcctSchema_ID();
+							int Combination_ID=DB.getSQLValue(getTrxName(), sql);
+							MAccount acc = new MAccount(getCtx(), Combination_ID, getTrxName());
+							cr = fact.createLine(line,
+									acc,
+									C_Currency_ID, null, costs);
+						}
+					}
+					else{
+						MInOutLine ioline = (MInOutLine)line.getPO();
+						if(!useCustomBPAcctByCurrency(as.getC_Currency_ID(), ioline.getM_InOut().getC_Order().getC_Currency_ID())){
+							cr = fact.createLine(line,
+									getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+									C_Currency_ID, null, costs);
+						}
+						else{
+							int orderCurrency_ID = ioline.getM_InOut().getC_Order().getC_Currency_ID();
+							String sql = "SELECT NotInvoicedReceipts_Acct "
+									+ "FROM C_BP_V_InvAcctByCurrency "
+									+ "WHERE C_Currency_ID = " + orderCurrency_ID
+									+ " AND C_BPartner_ID = " + getC_BPartner_ID()
+									+ " AND C_AcctSchema_ID = " + as.getC_AcctSchema_ID();
+							
+							int Combination_ID=DB.getSQLValue(getTrxName(), sql);
+							MAccount acc = new MAccount(getCtx(), Combination_ID, getTrxName());
+							cr = fact.createLine(line,
+									acc,
+									C_Currency_ID, null, costs);
+						}
+		
+					}
+				}
+				/*
+				 * 	end AR AP Acct by Currency
+				 */
+				
 				if (cr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"CR not created:") + " " + line;
@@ -886,6 +963,19 @@ public class Doc_InOut extends Doc
 					I_M_RMALine rmaLine = ioLine.getM_RMALine();
 					costs = rmaLine != null ? rmaLine.getAmt() : BigDecimal.ZERO;
 					I_M_InOutLine originalInOutLine = rmaLine != null ? rmaLine.getM_InOutLine() : null;
+					
+					/*
+					 * 	custom (from HP)
+					 */
+					if(ioLine.get_ValueAsBoolean("IsUnitCost")){
+						costs = (BigDecimal) ioLine.get_Value("UnitCostEntered");
+						costs = costs.multiply(line.getQty());
+						costs = costs.negate();
+					}
+					/*
+					 * 	end
+					 */
+					
 					if (originalInOutLine != null && originalInOutLine.getC_OrderLine_ID() > 0)
 					{
 						MOrderLine originalOrderLine = (MOrderLine) originalInOutLine.getC_OrderLine();
@@ -985,6 +1075,19 @@ public class Doc_InOut extends Doc
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
+						
+						/*
+						 * 	custom (from HP)
+						 */
+						if(ioLine.get_ValueAsBoolean("IsUnitCost")){
+							costs = (BigDecimal) ioLine.get_Value("UnitCostEntered");
+							costs = costs.multiply(line.getQty());
+							costs = costs.negate();
+						}
+						/*
+						 * 	end
+						 */
+						
 					}
 				}
 				else
@@ -993,10 +1096,43 @@ public class Doc_InOut extends Doc
 					costs = Env.ONE;
 				}
 
-				dr = fact.createLine(line,
-					getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
-					C_Currency_ID, costs , null);
-				//
+				/*
+				 * 	author @David
+				 * 	added and enhanced by @figo 
+				 * 	AR AP Acct by Currency
+				 * 	enhanced to use flag IsARAPPostingbyCurrency from Accounting Schema
+				 */
+				
+				if (!as.get_ValueAsBoolean("IsARAPPostingbyCurrency")) {
+					dr = fact.createLine(line,
+						getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+						C_Currency_ID, costs , null);
+					//
+				} else {
+					MInOutLine ioLine = (MInOutLine) line.getPO();
+					if(!useCustomBPAcctByCurrency(as.getC_Currency_ID(), ioLine.getM_RMALine().getM_RMA().getC_Currency_ID())){
+						dr = fact.createLine(line,
+						getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as),
+						C_Currency_ID, costs , null);	
+					}
+					else{
+						String sql = "SELECT NotInvoicedReceipts_Acct "
+								+ "FROM C_BP_V_InvAcctByCurrency "
+								+ "WHERE C_Currency_ID = " + ioLine.getM_RMALine().getM_RMA().getC_Currency_ID()
+								+ " AND C_BPartner_ID = " + ioLine.getM_RMALine().getM_RMA().getC_BPartner_ID()
+								+ " AND C_AcctSchema_ID = " + as.getC_AcctSchema_ID();
+						int ValidComb_ID=DB.getSQLValue(getTrxName(), sql);
+						MAccount acctComb = new MAccount(getCtx(), ValidComb_ID, getTrxName());
+						dr = fact.createLine(line,
+						acctComb,
+						C_Currency_ID, costs , null);						
+					}
+				}
+				
+				/*
+				 * 	end AR AP Acct by Currency
+				 */
+				
 				if (dr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"CR not created:")+ " " + line;
@@ -1067,6 +1203,26 @@ public class Doc_InOut extends Doc
 		}
 		//
 		facts.add(fact);
+		
+		/*
+		 * 	add code from taowi-1.0 for Commitment
+		 * 	added by @figo
+		 */
+		if (as.isAccrual() && as.isCreatePOCommitment() && getDocumentType().equals(DOCTYPE_MatReceipt) && !isSOTrx())
+		{
+			for (int i = 0; i < p_lines.length; i++)
+			{
+			fact = Doc_Order.get_CommitmentRelease(as, this,
+				p_lines[i].getQty(), p_lines[i].get_ID(), Env.ONE, true);
+			if (fact == null)
+				return null;
+			facts.add(fact);
+			}
+		}	//	Commitment
+		/*
+		 * 	end
+		 */
+		
 		return facts;
 	}   //  createFact
 
