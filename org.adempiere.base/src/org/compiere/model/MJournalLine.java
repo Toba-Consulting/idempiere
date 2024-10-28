@@ -325,9 +325,28 @@ public class MJournalLine extends X_GL_JournalLine
 			return false;
 		}
 		fillDimensionsFromCombination();
+		
+		//@win make sure sync values with parent
+		BigDecimal rate = Env.ZERO;
+		if (getCurrencyRate().compareTo(Env.ZERO)<=0) {
+			rate = getParent().getCurrencyRate();
+			setCurrencyRate(rate);
+		} else {
+			rate = getCurrencyRate();
+		}
+		if (getC_Currency_ID()<=0)
+			setC_Currency_ID(getParent().getC_Currency_ID());
+		
+		if (getC_ConversionType_ID()<=0)
+			setC_ConversionType_ID(getParent().getC_ConversionType_ID());
+		
+		if (getDateAcct()== null)
+			setDateAcct(getParent().getDateAcct());
+				
+		//@win
 
 		//	Acct Amts
-		BigDecimal rate = getCurrencyRate();
+		/*BigDecimal rate = getCurrencyRate(); 				comment out by @figo ****/
 		BigDecimal amt = rate.multiply(getAmtSourceDr());
 		if (amt.scale() > getPrecision())
 			amt = amt.setScale(getPrecision(), RoundingMode.HALF_UP);

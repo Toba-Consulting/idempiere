@@ -528,6 +528,8 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	public static final String DOCSUBTYPEINV_InternalUseInventory = "IU";
 	/** Physical Inventory = PI */
 	public static final String DOCSUBTYPEINV_PhysicalInventory = "PI";
+	/** Misc Receipt = MR */
+	public static final String DOCSUBTYPEINV_MiscReceipt = "MR";
 	/** Set Inv Sub Type.
 		@param DocSubTypeInv Inventory Sub Type
 	*/

@@ -31,6 +31,7 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MAssetTransfer;
 import org.compiere.model.MBankStatement;
+import org.compiere.model.MColumn;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
@@ -39,6 +40,7 @@ import org.compiere.model.MMatchPO;
 import org.compiere.model.MMovement;
 import org.compiere.model.MRevenueRecognitionPlan;
 import org.compiere.model.MUOM;
+import org.compiere.model.Query;
 import org.compiere.model.X_C_AcctSchema_Element;
 import org.compiere.model.X_Fact_Acct;
 import org.compiere.process.DocAction;
@@ -1620,16 +1622,27 @@ public final class FactLine extends X_Fact_Acct
 		String Docstatus = "";
 		int Record_ID = 0;
 		Record_ID = getRecord_ID();
-			
-		if(!TableName.equalsIgnoreCase(MMatchInv.Table_Name) 
-				&& !TableName.equalsIgnoreCase(MMatchPO.Table_Name)){
+		
+		/*
+		 * 	enhanced
+		 * 	should check table has column DocStatus or not firts
+		 * 	
+		 */
+		
+		String whereClause = "ColumnName = 'DocStatus' "
+				+ "AND AD_Table_ID IN (SELECT AD_TABLE_ID FROM AD_TABLE WHERE TableName = '" + TableName + "')";
+		boolean hasColDocStatus = new Query(getCtx(), MColumn.Table_Name, whereClause, get_TrxName()).match();
+		
+		if (hasColDocStatus) {
+			if(!TableName.equalsIgnoreCase(MMatchInv.Table_Name) 
+					&& !TableName.equalsIgnoreCase(MMatchPO.Table_Name)){
+					
+				sql.append("SELECT DocStatus ");
+				sql.append(" FROM " + TableName);
+				sql.append(" WHERE "+TableName + "_ID = ?");
 				
-			sql.append("SELECT DocStatus ");
-			sql.append(" FROM " + TableName);
-			sql.append(" WHERE "+TableName + "_ID = ?");
-			
-			Docstatus = DB.getSQLValueStringEx(get_TrxName(), sql.toString(),Record_ID);
-			
+				Docstatus = DB.getSQLValueStringEx(get_TrxName(), sql.toString(),Record_ID);
+			}
 		}
 		return Docstatus;
 	}
@@ -1644,15 +1657,27 @@ public final class FactLine extends X_Fact_Acct
 		int Record_ID = 0;
 		Record_ID = getRecord_ID();
 			
-		if (!TableName.equalsIgnoreCase(MBankStatement.Table_Name)
-				&&!TableName.equalsIgnoreCase(MAssetAddition.Table_Name)
-				&&!TableName.equalsIgnoreCase(MAssetTransfer.Table_Name)){
-			
-			sql.append("SELECT Reversal_ID ");
-			sql.append(" FROM " + TableName);
-			sql.append(" WHERE "+TableName + "_ID = ?");
-			
-			Docstatus = DB.getSQLValueEx(get_TrxName(), sql.toString(),Record_ID);
+		/*
+		 * 	enhanced
+		 * 	should check table has column reversal_id or not firts
+		 * 	
+		 */
+		
+		String whereClause = "ColumnName = 'Reversal_ID' "
+				+ "AND AD_Table_ID IN (SELECT AD_TABLE_ID FROM AD_TABLE WHERE TableName = '" + TableName + "')";
+		boolean hasColReversal_ID = new Query(getCtx(), MColumn.Table_Name, whereClause, get_TrxName()).match();
+		
+		if (hasColReversal_ID) {
+			if (!TableName.equalsIgnoreCase(MBankStatement.Table_Name)
+					&&!TableName.equalsIgnoreCase(MAssetAddition.Table_Name)
+					&&!TableName.equalsIgnoreCase(MAssetTransfer.Table_Name)){
+				
+				sql.append("SELECT Reversal_ID ");
+				sql.append(" FROM " + TableName);
+				sql.append(" WHERE "+TableName + "_ID = ?");
+				
+				Docstatus = DB.getSQLValueEx(get_TrxName(), sql.toString(),Record_ID);
+			}
 		}
 		
 		if (Docstatus != 0)
