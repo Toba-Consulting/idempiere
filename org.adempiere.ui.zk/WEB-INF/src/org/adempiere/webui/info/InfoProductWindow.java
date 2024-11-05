@@ -559,57 +559,58 @@ public class InfoProductWindow extends InfoWindow {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	protected void initParameters() {
-		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
-
-		String usePriceList=Env.getContext(Env.getCtx(), p_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE+"UsePriceListInProductInfo");
-		int M_PriceList_Version_ID = 0;
-		if ("Y".equalsIgnoreCase(usePriceList))
-		{
-			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
-
-			M_PriceList_Version_ID = findPLV(M_PriceList_ID);
-		}
-		//	Set Warehouse
-		if (M_Warehouse_ID == 0)
-			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
-		if (M_Warehouse_ID != 0)
-			setWarehouse (M_Warehouse_ID);
-		else {
-			// check for default value of field
-			for(WEditor editor : editors) {
-				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
-					if (editor.getValue() != null) {
-						M_Warehouse_ID = (Integer) editor.getValue();
-						if (M_Warehouse_ID > 0) {
-							Env.setContext(infoContext, p_WindowNo, "M_Warehouse_ID", M_Warehouse_ID);
-							Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_Warehouse_ID", Integer.toString(M_Warehouse_ID));
-						}
-					}
-					break;
-				}
-			}
-		}
-		// 	Set PriceList Version
-		if (M_PriceList_Version_ID != 0)
-			setPriceListVersion (M_PriceList_Version_ID);
-		else {
-			// check for default value of field
-			for(WEditor editor : editors) {
-				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_PriceList_Version_ID")) {
-					if (editor.getValue() != null) {
-						M_PriceList_Version_ID = (Integer) editor.getValue();
-						if (M_PriceList_Version_ID > 0) {
-							Env.setContext(infoContext, p_WindowNo, "M_PriceList_Version_ID", M_PriceList_Version_ID);
-							Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_PriceList_Version_ID", Integer.toString(M_PriceList_Version_ID));
-						}
-					}
-					break;
-				}
-			}
-		}
-	}
+//	@Commented out by Jeremy - TCS-722
+//	@Override
+//	protected void initParameters() {
+//		int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_Warehouse_ID");
+//
+//		String usePriceList=Env.getContext(Env.getCtx(), p_WindowNo, Env.PREFIX_PREDEFINED_VARIABLE+"UsePriceListInProductInfo");
+//		int M_PriceList_Version_ID = 0;
+//		if ("Y".equalsIgnoreCase(usePriceList))
+//		{
+//			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), p_WindowNo, "M_PriceList_ID");
+//
+//			M_PriceList_Version_ID = findPLV(M_PriceList_ID);
+//		}
+//		//	Set Warehouse
+//		if (M_Warehouse_ID == 0)
+//			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
+//		if (M_Warehouse_ID != 0)
+//			setWarehouse (M_Warehouse_ID);
+//		else {
+//			// check for default value of field
+//			for(WEditor editor : editors) {
+//				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_Warehouse_ID")) {
+//					if (editor.getValue() != null) {
+//						M_Warehouse_ID = (Integer) editor.getValue();
+//						if (M_Warehouse_ID > 0) {
+//							Env.setContext(infoContext, p_WindowNo, "M_Warehouse_ID", M_Warehouse_ID);
+//							Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_Warehouse_ID", Integer.toString(M_Warehouse_ID));
+//						}
+//					}
+//					break;
+//				}
+//			}
+//		}
+//		// 	Set PriceList Version
+//		if (M_PriceList_Version_ID != 0)
+//			setPriceListVersion (M_PriceList_Version_ID);
+//		else {
+//			// check for default value of field
+//			for(WEditor editor : editors) {
+//				if (editor.getGridField() != null && editor.getGridField().getColumnName().equals("M_PriceList_Version_ID")) {
+//					if (editor.getValue() != null) {
+//						M_PriceList_Version_ID = (Integer) editor.getValue();
+//						if (M_PriceList_Version_ID > 0) {
+//							Env.setContext(infoContext, p_WindowNo, "M_PriceList_Version_ID", M_PriceList_Version_ID);
+//							Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, "M_PriceList_Version_ID", Integer.toString(M_PriceList_Version_ID));
+//						}
+//					}
+//					break;
+//				}
+//			}
+//		}
+//	}
 	
 	/**
 	 *	Find Price List Version and update context

@@ -759,14 +759,16 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		//	Pick init
 		fillPicks(M_PriceList_ID);
 		int M_PriceList_Version_ID = findPLV (M_PriceList_ID);
+		
+//		@Commented out by Jeremy - TCS-722
 		//	Set Warehouse
-		if (M_Warehouse_ID == 0)
-			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
-		if (M_Warehouse_ID != 0)
-			setWarehouse (M_Warehouse_ID);
-		// 	Set PriceList Version
-		if (M_PriceList_Version_ID != 0)
-			setPriceListVersion (M_PriceList_Version_ID);
+//		if (M_Warehouse_ID == 0)
+//			M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), Env.M_WAREHOUSE_ID);
+//		if (M_Warehouse_ID != 0)
+//			setWarehouse (M_Warehouse_ID);
+//		// 	Set PriceList Version
+//		if (M_PriceList_Version_ID != 0)
+//			setPriceListVersion (M_PriceList_Version_ID);
 
 		//	Create Grid
 		String orderBy = null;

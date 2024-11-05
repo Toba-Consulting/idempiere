@@ -173,14 +173,15 @@ public class DefaultInfoFactory implements IInfoFactory {
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_AttributeSetInstance_ID", "0");
 			Env.setContext(Env.getCtx(), lookup.getWindowNo(), Env.TAB_INFO, "M_Lookup_ID", "0");
 
-			int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_Warehouse_ID");
-			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_PriceList_ID");
-
-			//	Show Info
-			info = new InfoProductPanel (lookup.getWindowNo(),
-					M_Warehouse_ID, M_PriceList_ID, true, queryValue, whereClause);
-
-			info.setTitle("Product Info");
+//			Commented out by @Jeremy
+//			int M_Warehouse_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_Warehouse_ID");
+//			int M_PriceList_ID = Env.getContextAsInt(Env.getCtx(), lookup.getWindowNo(), "M_PriceList_ID");
+//
+//			//	Show Info
+//			info = new InfoProductPanel (lookup.getWindowNo(),
+//					M_Warehouse_ID, M_PriceList_ID, true, queryValue, whereClause);
+//
+//			info.setTitle("Product Info");
 		}
 		else if (col.equals("C_BPartner_ID"))
 		{
