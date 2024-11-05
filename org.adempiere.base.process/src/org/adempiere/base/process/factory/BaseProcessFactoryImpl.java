@@ -42,7 +42,7 @@ public class BaseProcessFactoryImpl extends AnnotationBasedProcessFactory {
 	@Override
 	protected String[] getPackages() {
 		return new String[] {"org.adempiere.base.process", "org.adempiere.process", "org.compiere.install", "org.compiere.process",
-				"org.idempiere.process"};
+				"org.idempiere.process", "org.taowi.process"};
 	}
 
 }
