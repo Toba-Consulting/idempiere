@@ -111,6 +111,25 @@ public class CalloutInventory extends CalloutEngine
 			}
 		}
 		
+		/*
+		 * This is the code from CalloutInventory in Taowi 1.0 / iDempiere Core V3.
+		 * This is for supporting MultiUOM when choosing Product.
+		 * This feature will set C_UOM_ID based on Product UOM.
+		 * Also, this feature will set MovementQty based on QtyEntered
+		 * @trigger: M_Product_ID
+		 * @set: C_UOM_ID, MovementQty 
+		 * @note: C_UOM_ID && QtyEntered && MovementQty (migration script -> because it is custom column)
+		 * @start
+		 */
+		MProduct product = MProduct.get(ctx, M_Product_ID);
+		mTab.setValue("C_UOM_ID", Integer.valueOf(product.getC_UOM_ID()));
+		
+		BigDecimal QtyEntered = (BigDecimal)mTab.getValue("QtyEntered");
+		mTab.setValue("MovementQty", QtyEntered);
+		/*
+		 * @end
+		 */
+		
 		//
 		if (log.isLoggable(Level.INFO)) log.info("M_Product_ID=" + M_Product_ID 
 			+ ", M_Locator_ID=" + M_Locator_ID

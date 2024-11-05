@@ -369,6 +369,23 @@ public class CalloutInvoice extends CalloutEngine
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 		//
+		
+		/*
+		 * This is from CalloutInvoice in Taowi 1.0
+		 * This should be related to fixed asset.
+		 * This callout set A_Asset_Group_ID by looking at Product Category from Product that has default value of A_Asset_Group_ID.
+		 * @trigger: M_Product_ID
+		 * @set: A_Asset_Group_ID
+		 * @note: A_Asset_Group_ID (migration script -> custom column)
+		 * @start
+		 */
+		MProduct product = new MProduct(ctx, M_Product_ID, null);
+		if(product.getM_Product_Category().getA_Asset_Group_ID() > 0)
+			mTab.setValue("A_Asset_Group_ID", product.getM_Product_Category().getA_Asset_Group_ID());
+		/*
+		 * @end
+		 */
+		
 		return tax (ctx, WindowNo, mTab, mField, value);
 	}	//	product
 

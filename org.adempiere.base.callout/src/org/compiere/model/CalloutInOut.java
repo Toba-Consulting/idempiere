@@ -288,13 +288,31 @@ public class CalloutInOut extends CalloutEngine
 						mTab.setValue("C_BPartner_Location_ID", ii);
 					//	Contact
 					ii = Integer.valueOf(rs.getInt("AD_User_ID"));
-					if (rs.wasNull())
-						mTab.setValue("AD_User_ID", null);
-					else {
-						int ShipTo_User_ID = rs.getInt("ShipTo_User_ID");
-						Integer userID = ShipTo_User_ID > 0 ? Integer.valueOf(ShipTo_User_ID) : ii;
-						mTab.setValue("AD_User_ID", userID);
+					
+					/*
+					 * This is the code from CalloutInOut in Taowi 1.0 / iDempiere Core V3.
+					 * This is for set the value of AD_User_ID from context variable and the flow is like this.
+					 * This is only for InOut with SOTrx = False.
+					 * Objective is to override the value AD_User_ID from query above if the C_BPartner_ID same like the context variable.
+					 * If the C_BPartner_ID is same like the context variable, then try to get AD_User_ID from context variable.
+					 * Set the AD_User_ID from the value AD_User_ID from context variable, else use the value AD_User_ID from query.
+					 * @trigger: C_BPartner_ID
+					 * @set: AD_User_ID
+					 * @start
+					 */
+					if (C_BPartner_ID.toString().equals(Env.getContext(ctx, WindowNo, Env.TAB_INFO, "C_BPartner_ID")))
+					{
+						String cont = Env.getContext(ctx, WindowNo, Env.TAB_INFO, "AD_User_ID");
+						if (cont.length() > 0)
+							ii = Integer.parseInt(cont);
 					}
+					if (ii==0)
+						mTab.setValue("AD_User_ID", null);
+					else
+						mTab.setValue("AD_User_ID", ii);
+					/*
+					 * @end
+					 */
 				}
 
 				//Bugs item #1679818: checking for SOTrx only

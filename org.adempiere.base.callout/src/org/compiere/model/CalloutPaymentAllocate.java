@@ -77,11 +77,18 @@ public class CalloutPaymentAllocate extends CalloutEngine
 		}
 
 		//  Payment Date
+		/*
+		 * This is based on the CalloutPaymentAllocate in Taowi 1.0 / iDempiere Core V3
+		 * This is needed so the org value is consistent with org from invoice
+		 * Add query selecting one column, AD_Org_ID on the last column
+		 * Then, we also add mTab.setValue("AD_Org_ID", AD_Org_ID) on the end
+		 * @start
+		 */
 		Timestamp ts = Env.getContextAsDate(ctx, WindowNo, "DateTrx");
 		//
 		String sql = "SELECT C_BPartner_ID,C_Currency_ID,"		//	1..2
 			+ " invoiceOpen(C_Invoice_ID, ?),"					//	3		#1
-			+ " invoiceDiscount(C_Invoice_ID,?,?), IsSOTrx "	//	4..5	#2/3
+			+ " invoiceDiscount(C_Invoice_ID,?,?), IsSOTrx, AD_Org_ID "	//	4..5	#2/3
 			+ "FROM C_Invoice WHERE C_Invoice_ID=?";			//			#4
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -108,6 +115,12 @@ public class CalloutPaymentAllocate extends CalloutEngine
 				//  reset as dependent fields get reset
 				Env.setContext(ctx, WindowNo, mTab.getTabNo(), "C_Invoice_ID", C_Invoice_ID.toString());
 				mTab.setValue("C_Invoice_ID", C_Invoice_ID);
+				
+				int AD_Org_ID = rs.getInt(6);
+				mTab.setValue("AD_Org_ID", AD_Org_ID);
+				/*
+				 * @end
+				 */
 			}
 		}
 		catch (SQLException e)

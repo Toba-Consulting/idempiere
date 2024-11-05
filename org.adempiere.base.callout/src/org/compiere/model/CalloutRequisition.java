@@ -51,7 +51,20 @@ public class CalloutRequisition extends CalloutEngine
 			return "";
 		final I_M_Requisition req = GridTabWrapper.create(mTab.getParentTab(), I_M_Requisition.class);
 		final I_M_RequisitionLine line = GridTabWrapper.create(mTab, I_M_RequisitionLine.class);
+		
+		/*
+		 * This is from CalloutRequisition in Taowi 1.0 / iDempiere Core V3
+		 * This is commented out because price list not mandatory
+		 * This will be correlated with the other method will be commented out also
+		 * @start
+		 */
+		/*
 		setPrice(ctx, WindowNo, req, line);
+		*/
+		/*
+		 * @end
+		 */
+		
 		MProduct product = MProduct.get(ctx, M_Product_ID);
 		line.setC_UOM_ID(product.getC_UOM_ID());
 
@@ -69,7 +82,13 @@ public class CalloutRequisition extends CalloutEngine
 	 *  @return null or error message
 	 */
 	public String amt (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
-	{
+	{	
+		/*
+		 * This is from Callout Taowi 1.0 / iDempiere Core V3
+		 * This is commented out because price list not mandatory
+		 * @start
+		 */
+		/*
 		if (isCalloutActive() || value == null)
 			return "";
 		
@@ -94,11 +113,21 @@ public class CalloutRequisition extends CalloutEngine
 		line.setLineNetAmt(LineNetAmt);
 		if (log.isLoggable(Level.INFO)) log.info("amt - LineNetAmt=" + LineNetAmt);
 		//
+		 */
+		/*
+		 * @end
+		 */
 		return "";
 	}	//	amt
 
 	private void setPrice(Properties ctx, int WindowNo, I_M_Requisition req, I_M_RequisitionLine line)
 	{
+		/*
+		 * This is from CalloutRequisition in Taowi 1.0 / iDempiere Core V3
+		 * This is because PriceList is not mandatory
+		 * @start
+		 */
+		/*
 		int C_BPartner_ID = line.getC_BPartner_ID();
 		BigDecimal Qty = line.getQty();
 		boolean isSOTrx = false;
@@ -115,5 +144,9 @@ public class CalloutRequisition extends CalloutEngine
 		line.setPriceActual(pp.getPriceStd());
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");	//	not used
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
+		*/
+		/*
+		 * @end
+		 */
 	}
 }	//	CalloutRequisition

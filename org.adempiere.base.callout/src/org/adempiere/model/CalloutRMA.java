@@ -281,6 +281,33 @@ public class CalloutRMA extends CalloutEngine {
 		MInOut inout = new MInOut(ctx, M_InOut_ID, null);
 		if (inout.get_ID() != 0)
 		{
+			/* 
+			 * This is the code from CalloutRMA on the Taowi 1.0 / iDempiere Core V3.
+			 * There are no code to set AD_Org_ID and M_Warehouse_ID based on the InOut, so it was moved here.
+			 * @trigger: M_InOut_ID
+			 * @set: AD_Org_ID, M_Warehouse_ID
+			 * @note: M_Warehouse_ID (this is custom column -> migration script, static final string M_Warehouse_ID in model class must be added)
+			 * @start
+			 */
+			mTab.setValue(MRMA.COLUMNNAME_AD_Org_ID, inout.getAD_Org_ID());
+			mTab.setValue(MRMA.COLUMNNAME_M_Warehouse_ID, inout.getM_Warehouse_ID());
+			/*
+			 * @end
+			 */
+			
+			/*
+			 * This is the code from HBC_CalloutRMA where the feature can be blended into Taowi 2.0 / iDempiere Core V11.
+			 * Take a note that this piece of code in HBC_CalloutRMA must be deleted, so it isn't redundant.
+			 * @trigger: M_InOut_ID
+			 * @set: C_BPartner_ID, C_Order_ID
+			 * @start
+			 */
+			mTab.setValue("C_BPartner_ID", inout.getC_BPartner_ID());
+			mTab.setValue("C_Order_ID", inout.getC_Order_ID());
+			/*
+			 * @end
+			 */
+			
 			if (inout.getSalesRep_ID() > 0)
 				mTab.setValue("SalesRep_ID", Integer.valueOf(inout.getSalesRep_ID()));
 			else

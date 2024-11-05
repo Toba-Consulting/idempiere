@@ -1118,7 +1118,8 @@ public class CalloutOrder extends CalloutEngine
 
 		//  Discount entered - Calculate Actual/Entered
 		if (mField.getColumnName().equals("Discount"))
-		{
+		{	
+			/*
 			if ( PriceList.doubleValue() != 0 )
 				PriceActual = BigDecimal.valueOf((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
 			if (PriceActual.scale() > StdPrecision)
@@ -1127,6 +1128,37 @@ public class CalloutOrder extends CalloutEngine
 				C_UOM_To_ID, PriceActual, 12);
 			if (PriceEntered == null)
 				PriceEntered = PriceActual;
+			*/
+			
+			/*
+			 * This is from CalloutOrder in Taowi 1.0 / iDempiere Core V3
+			 * This also commented out the calculation above.
+			 * It is related to price calculation for multi UOM scenario
+			 * This Callout will lookup at the PriceList first, if it is not zero.
+			 * The PriceEntered is calculated by applying a discount percentage (Discount) to the original price (PriceList), resulting in the final price as a BigDecimal using the formula (100.0 - Discount) / 100.0 * PriceList.
+			 * Then, PriceEntered also will be revalidate if the scale is bigger than the StdPrecision, with set scale StdPrecision with RoundingMode Half Up
+			 * Then, calculate the PriceActual based on the UOM Conversion with parameter Product, C_UOM_To_ID, and PriceEntered
+			 * Last, it will set the PriceActual and PriceEntered
+			 * @trigger: Discount
+			 * @set: PriceEntered, PriceActual
+			 * @start
+			 */
+			if ( PriceList.doubleValue() != 0 )
+				PriceEntered = BigDecimal.valueOf((100.0 - Discount.doubleValue()) / 100.0 * PriceList.doubleValue());
+			if (PriceEntered.scale() > StdPrecision)
+				PriceEntered = PriceEntered.setScale(StdPrecision, RoundingMode.HALF_UP);
+			PriceActual = MUOMConversion.convertProductTo (ctx, M_Product_ID,
+				C_UOM_To_ID, PriceEntered);
+			
+			if (PriceEntered == null)
+			{
+				PriceEntered = Env.ZERO;
+				PriceActual = Env.ZERO;
+			}
+			/*
+			 * @end
+			 */
+			
 			mTab.setValue("PriceActual", PriceActual);
 			mTab.setValue("PriceEntered", PriceEntered);
 		}
@@ -1172,7 +1204,20 @@ public class CalloutOrder extends CalloutEngine
 		}
 
 		//	Line Net Amt
-		BigDecimal LineNetAmt = QtyEntered.multiply(PriceEntered);
+		/*
+		 * This is from CalloutOrder Taowi 1.0 / iDempire Core V3
+		 * This calculation of LineNetAmt is changed from QtyEntered multiply PriceEntered
+		 * Becoming QtyOrdered multiply PriceActual
+		 * @trigger:QtyEntered, QtyOrdered, C_UOM_ID, PriceList, PriceActual, PriceEntered, Discount
+		 * @set: LineNetAmt
+		 * @start
+		 */
+		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
+//		BigDecimal LineNetAmt = QtyEntered.multiply(PriceEntered);
+		/*
+		 * @end
+		 */
+		
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		if (log.isLoggable(Level.INFO)) log.info("LineNetAmt=" + LineNetAmt);
